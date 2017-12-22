@@ -4,7 +4,7 @@ CCFLAGS = -Wall
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system
 
 # fichiers du projet
-SRC = main.cc Decor.cc Player.cc
+SRC = main.cc Decor.cc Player.cc Evenement.cc
 OBJ = $(SRC:.c=.o)
 EXEC = main
 
@@ -15,7 +15,7 @@ all: $(EXEC)
 # dépendance des .hh
 Decor.o: Decor.hh
 Player.o: Player.hh
-# particle.o: particle.hh
+Evenement.o: Evenement.hh
 
 
 # règles de compilation

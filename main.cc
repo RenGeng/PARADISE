@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "Decor.hh"
 #include "Player.hh"
+#include "Evenement.hh"
 
  // Taille de la fenêtre : 800x480 pixels
 const int SCREEN_WIDTH = 800;
@@ -26,16 +27,21 @@ int main()
     Perso.setDimension(0.25,0.25);
     Perso.Apparition(window);
 
+    Evenement event;
+
     while(window.isOpen()){
         window.clear();
         Fond.Apparition(window);
         Perso.Apparition(window);
-        window.display();
-    	// sf::Event event;
-    	// while(window.pollEvent(event)){
-    	// 	//Si on clique sur fermer
-    	// 	if(event.type == sf::Event::Closed) window.close();
-    	// }
+        
+
+        event.Action(window,&Fond);
+
+    	sf::Event event;
+    	while(window.pollEvent(event)){
+    		//Si on clique sur fermer
+    		if(event.type == sf::Event::Closed) window.close();
+    	}
 
     	// //Gestion des évènements
     	// int vitesse=3;
@@ -94,6 +100,8 @@ int main()
      //    Perso.Apparition(window);
     	// window.display();
     	// // window.clear();
+
+        window.display();
     }
 
     return 0;
