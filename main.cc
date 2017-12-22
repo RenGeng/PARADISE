@@ -19,7 +19,7 @@ int main()
      //Background
 	sf::Texture backgroundTexture;
 	sf::Sprite background;
-	 if (!backgroundTexture.loadFromFile("background.png"))
+	 if (!backgroundTexture.loadFromFile("Image/background.png"))
 	{
 		// Erreur
 		cout << "Erreur durant le chargement de l'image de background." << endl;
@@ -31,7 +31,7 @@ int main()
     //Perso
     sf::Texture perso;
 	sf::Sprite cercle;
-	if(!perso.loadFromFile("personnage.jpg",sf::IntRect(30,30,350,430)))
+	if(!perso.loadFromFile("Image/personnage.jpg",sf::IntRect(30,30,350,430)))
 	{
 		// Erreur
 		cout << "Erreur durant le chargement de l'image de background." << endl;
