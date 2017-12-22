@@ -27,10 +27,10 @@ Decor::Decor(std::string chemins,int top, int left, int largeur, int hauteur)
 	}
 }
 
-void Decor::Apparition(sf::RenderWindow& window)
-{
-	window.draw(_image);
-}
+// void Decor::Apparition(sf::RenderWindow& window)
+// {
+// 	window.draw(_image);
+// }
 
 void Decor::setDimension(double coeffLargeur, double coeffHauteur)
 {

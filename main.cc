@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "Decor.hh"
 #include "Player.hh"
+#include "Background.hh"
 #include "Evenement.hh"
 
  // Taille de la fenêtre : 800x480 pixels
@@ -23,8 +24,8 @@ int main()
     Decor Fond("Image/background.png");
     Fond.Apparition(window);    
     //Perso
-    Player Perso("Image/personnage.jpg",30,30,350,430);
-    Perso.setDimension(0.25,0.25);
+    Player Perso("Image/DV.png");//,0,0,0,0);
+    //Perso.setDimension(0.25,0.25);
     Perso.Apparition(window);
 
     Evenement event;
@@ -32,10 +33,8 @@ int main()
     while(window.isOpen()){
         window.clear();
         Fond.Apparition(window);
-        Perso.Apparition(window);
-        
-
-        event.Action(window,&Fond);
+        Perso.Apparition(window);  
+        event.Action(window,&Perso);
 
     	sf::Event event;
     	while(window.pollEvent(event)){
