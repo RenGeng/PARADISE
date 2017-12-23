@@ -4,6 +4,7 @@ Background::Background(std::string chemins):Decor(chemins){//,int top, int left,
 	//_image.setPosition(0,300);
 }
 
-void Decor::Apparition(sf::RenderWindow& window){	
+
+void Background::Apparition(sf::RenderWindow& window){	
 	window.draw(_image);
 }

@@ -13,9 +13,9 @@ Decor::Decor(string chemins)
 		_image.setTexture(_texture);
 }
 
-Decor::Decor(std::string chemins,int top, int left, int largeur, int hauteur)
+Decor::Decor(std::string chemins,int cptcadre)//top, int left, int largeur, int hauteur)
 {
-	if (!_texture.loadFromFile(chemins,sf::IntRect(top,left,largeur,hauteur)))
+	if (!_texture.loadFromFile(chemins))//,sf::IntRect(top,left,largeur,hauteur)))
 	{
 		// Erreur
 		cout << "Erreur durant le chargement de l'image de background." << endl;

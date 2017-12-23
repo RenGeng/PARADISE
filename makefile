@@ -1,7 +1,7 @@
 # options de compilation
 CC = g++
 CCFLAGS = -Wall
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+LIBS =-lsfml-graphics -lsfml-window -lsfml-system
 
 # fichiers du projet
 SRC = main.cc Decor.cc Player.cc Evenement.cc Background.cc
@@ -14,9 +14,9 @@ all: $(EXEC)
 
 # dépendance des .hh
 Decor.o: Decor.hh
-Player.o: Player.hh
+Player.o: Player.hh Decor.hh
 Evenement.o: Evenement.hh
-Background.o: Background.hh
+Background.o: Background.hh Decor.hh
 
 
 # règles de compilation

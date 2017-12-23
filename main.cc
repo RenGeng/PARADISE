@@ -21,10 +21,10 @@ int main()
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
      //Background
-    Decor Fond("Image/background.png");
+    Background Fond("Image/background.png");
     Fond.Apparition(window);    
     //Perso
-    Player Perso("Image/DV.png");//,0,0,0,0);
+    Player Perso("Image/DV.png",2);//,0,0,0,0);
     //Perso.setDimension(0.25,0.25);
     Perso.Apparition(window);
 
@@ -33,9 +33,11 @@ int main()
     while(window.isOpen()){
         window.clear();
         Fond.Apparition(window);
-        Perso.Apparition(window);  
-        event.Action(window,&Perso);
-
+          
+        event.ActionPlayer(window,&Perso);
+        Perso.changement_cadre();
+        Perso.Apparition(window);
+        
     	sf::Event event;
     	while(window.pollEvent(event)){
     		//Si on clique sur fermer
