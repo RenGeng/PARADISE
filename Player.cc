@@ -1,20 +1,29 @@
 #include "Player.hh"
+#define VITESSE_COURSE 5 //Gère la vitesse de changement car les sleeps c'est galere
+int vitesse_course=0;
 
 Player::Player(std::string chemins,int cptcadre):Decor(chemins){//,int top, int left, int largeur, int hauteur):Decor(chemins,top,left,largeur,hauteur){
 	_cptcadre=cptcadre;
 	_pos=1;
-	_image.setPosition(400,240);
+	_image.setPosition(200,400);
 }
 
 
 void Player::Apparition(sf::RenderWindow& window){
-	_image.setTextureRect(sf::IntRect(60*_cptcadre,0,60,121));
+	_image.setTextureRect(sf::IntRect(56*_cptcadre,0,56,110));
 	window.draw(_image);
 }
 
 void Player::changement_cadre(){
-	if(_cptcadre==2) _cptcadre=0; //Si on doit bouger on change de cadre
-	else _cptcadre+=1;
+	vitesse_course+=1;
+	if(_cptcadre==1 && vitesse_course==VITESSE_COURSE){
+		_cptcadre=0; //Si on doit bouger on change de cadre
+		vitesse_course=0;
+	}
+	else if(vitesse_course==VITESSE_COURSE){
+		_cptcadre+=1;
+		vitesse_course=0;
+	}
 }
 
 int Player::getPos(){

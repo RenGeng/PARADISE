@@ -9,8 +9,8 @@
 #include "Evenement.hh"
 
  // Taille de la fenêtre : 800x480 pixels
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 480;
+const int SCREEN_HEIGHT = 800;
 using namespace std;
 
 int main()
@@ -21,23 +21,24 @@ int main()
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
      //Background
-    Background Fond("Image/background.png");
+    Background Fond("Image/background1.png");
     Fond.Apparition(window);    
     //Perso
-    Player Perso("Image/DV.png",2);//,0,0,0,0);
+    Player Perso("Image/ST1.png",1);//,0,0,0,0);
+
     //Perso.setDimension(0.25,0.25);
     Perso.Apparition(window);
 
     Evenement event;
 
     while(window.isOpen()){
-        window.clear();
-        Fond.Apparition(window);
           
         event.ActionPlayer(window,&Perso);
+        window.clear();
+        Fond.Apparition(window);
+        Fond.Scrolling();
         Perso.changement_cadre();
-        Perso.Apparition(window);
-        
+        Perso.Apparition(window);       
     	sf::Event event;
     	while(window.pollEvent(event)){
     		//Si on clique sur fermer
