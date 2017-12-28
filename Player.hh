@@ -5,7 +5,7 @@
 class Player: public Decor
 {
 public:
-	Player(std::string chemins,int cptcadre);//,int top, int left, int largeur, int hauteur);
+	Player(std::string chemins,int cptcadre);
 	void Apparition(sf::RenderWindow& window);
 	void changement_cadre();
 	int getPos();

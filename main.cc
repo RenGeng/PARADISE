@@ -7,6 +7,7 @@
 #include "Player.hh"
 #include "Background.hh"
 #include "Evenement.hh"
+#include "Objet.hh"
 
  // Taille de la fenêtre : 800x480 pixels
 const int SCREEN_WIDTH = 480;
@@ -21,24 +22,36 @@ int main()
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
      //Background
-    Background Fond("Image/background1.png");
-    Fond.Apparition(window);    
+    Background Fond1("Image/background1.png",5);
+    Background Fond2("Image/background2.png",5);
+    Fond1.Apparition(window);    
     //Perso
     Player Perso("Image/ST1.png",1);//,0,0,0,0);
 
-    //Perso.setDimension(0.25,0.25);
+    Objet Carre("Image/carre.png",5);
+    Carre.Apparition(window);
     Perso.Apparition(window);
 
     Evenement event;
+
+    //Pour test
+    bool touche=false;
 
     while(window.isOpen()){
           
         event.ActionPlayer(window,&Perso);
         window.clear();
-        Fond.Apparition(window);
-        Fond.Scrolling();
+        Fond1.Apparition(window);
+        Fond2.Apparition(window);
+        Fond1.Scrolling(&Fond2);
         Perso.changement_cadre();
-        Perso.Apparition(window);       
+        Perso.Apparition(window);
+        Carre.Scrolling();
+
+        //Pour test gestion collision
+        if(Carre.getPos_x()==Perso.getPos_x() && Carre.getPos_y()==Perso.getPos_y()) touche=true;
+        if(touche==false) Carre.Apparition(window);    
+        //
     	sf::Event event;
     	while(window.pollEvent(event)){
     		//Si on clique sur fermer
@@ -58,7 +71,7 @@ int main()
     	// 		Perso.move(vitesse,-saut/10);
     	// 		// window.clear();
     	// 		// window.draw(background);
-     //            Fond.Apparition(window);
+     //            Fond1.Apparition(window);
     	// 		Perso.Apparition(window);
     	// 		window.display();
     	// 	}	
@@ -67,7 +80,7 @@ int main()
     	// 		Perso.move(vitesse,saut/10);
     	// 		//window.clear();
     	// 		// window.draw(background);
-     //            Fond.Apparition(window);
+     //            Fond1.Apparition(window);
     	// 		Perso.Apparition(window);
     	// 		window.display();
     	// 	}
@@ -82,7 +95,7 @@ int main()
     	// 		Perso.move(0,-saut/10);
     	// 		// window.clear();
     	// 		// window.draw(background);
-     //            Fond.Apparition(window);
+     //            Fond1.Apparition(window);
     	// 		Perso.Apparition(window);
     	// 		window.display();
     	// 	}	
@@ -91,13 +104,13 @@ int main()
     	// 		Perso.move(0,saut/10);
     	// 		// window.clear();
     	// 		// window.draw(background);
-     //            Fond.Apparition(window);
+     //            Fond1.Apparition(window);
     	// 		Perso.Apparition(window);
     	// 		window.display();
     	// 	}
     	// }
 
-     //    Fond.Apparition(window);
+     //    Fond1.Apparition(window);
     	// Perso.Apparition(window);
      //    Perso.Apparition(window);
     	// window.display();

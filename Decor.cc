@@ -10,12 +10,18 @@ Decor::Decor(string chemins)
 		cout << "Erreur durant le chargement de l'image de background." << endl;
 	}
 	else
+	{
+		_texture.setSmooth(true);
 		_image.setTexture(_texture);
+	}
+	_vitesse_scrolling=0;
+
+
 }
 
-Decor::Decor(std::string chemins,int cptcadre)//top, int left, int largeur, int hauteur)
+Decor::Decor(std::string chemins,int vitesse_scrolling)
 {
-	if (!_texture.loadFromFile(chemins))//,sf::IntRect(top,left,largeur,hauteur)))
+	if (!_texture.loadFromFile(chemins))
 	{
 		// Erreur
 		cout << "Erreur durant le chargement de l'image de background." << endl;
@@ -25,12 +31,9 @@ Decor::Decor(std::string chemins,int cptcadre)//top, int left, int largeur, int 
 		_texture.setSmooth(true);
 		_image.setTexture(_texture);
 	}
+	_vitesse_scrolling=vitesse_scrolling;
 }
 
-// void Decor::Apparition(sf::RenderWindow& window)
-// {
-// 	window.draw(_image);
-// }
 
 void Decor::setDimension(double coeffLargeur, double coeffHauteur)
 {
@@ -45,4 +48,19 @@ void Decor::move(int x, int y)
 void Decor::setPos(int x, int y)
 {
 	_image.setPosition(x,y);
+}
+
+int Decor::getPos_x(){
+	return _image.getPosition().x;
+}
+
+int Decor::getPos_y(){
+	return _image.getPosition().y;
+}
+
+int Decor::getSize_x(){
+	return _texture.getSize().x;
+}
+int Decor::getSize_y(){
+	return _texture.getSize().y;
 }
