@@ -3,11 +3,13 @@
 #include <string>
 #include <cstdlib>
 #include <unistd.h>
+#include <vector>
 #include "Decor.hh"
 #include "Player.hh"
 #include "Background.hh"
 #include "Evenement.hh"
 #include "Objet.hh"
+#define VITESSE_SCROLLING 5
 
  // Taille de la fenêtre : 800x480 pixels
 const int SCREEN_WIDTH = 480;
@@ -16,29 +18,30 @@ using namespace std;
 
 int main()
 {
+	int i,cpt_objet=0;
     //Création fenêtre 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT),"Paperise Run");
     //Modifier position de la fenêtre
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
      //Background
-    Background Fond1("Image/background1.png",5);
-    Background Fond2("Image/background2.png",5);
+    Background Fond1("Image/background1.png",VITESSE_SCROLLING);
+    Background Fond2("Image/background2.png",VITESSE_SCROLLING);
     Fond1.Apparition(window);    
     //Perso
-    Player Perso("Image/ST1.png",1);//,0,0,0,0);
+    Player Perso("Image/ST1.png",1);
 
-    Objet Carre("Image/carre.png",5);
-    Carre.Apparition(window);
+    vector<Objet> liste_objet;
+    // Objet Carre("Image/carre.png",VITESSE_SCROLLING);
+    // liste_objet.push_back(Carre);
+    // liste_objet[0].Apparition(window);
+
     Perso.Apparition(window);
-
     Evenement event;
 
-    //Pour test
-    bool touche=false;
 
     while(window.isOpen()){
-          
+        cpt_objet+=1;
         event.ActionPlayer(window,&Perso);
         window.clear();
         Fond1.Apparition(window);
@@ -46,12 +49,21 @@ int main()
         Fond1.Scrolling(&Fond2);
         Perso.changement_cadre();
         Perso.Apparition(window);
-        Carre.Scrolling();
+        if(cpt_objet==100){
+        	Objet Carre("Image/carre.png",VITESSE_SCROLLING);
+   			liste_objet.push_back(Carre);
+   			cpt_objet=0;
+   		}
+        for (i = 0; i < liste_objet.size(); ++i)
+        {
+        	liste_objet[i].Scrolling();
+        	liste_objet[i].Apparition(window);
+        	//gestion collision si on touche l'objet on le retire de la liste
+        	if(liste_objet[i].getPos_x()==Perso.getPos_x() && liste_objet[i].getPos_y()==Perso.getPos_y()) liste_objet.erase(liste_objet.begin()+i);  
+        
+        }
 
-        //Pour test gestion collision
-        if(Carre.getPos_x()==Perso.getPos_x() && Carre.getPos_y()==Perso.getPos_y()) touche=true;
-        if(touche==false) Carre.Apparition(window);    
-        //
+       
     	sf::Event event;
     	while(window.pollEvent(event)){
     		//Si on clique sur fermer

@@ -11,3 +11,4 @@ void Objet::Apparition(sf::RenderWindow& window){
 void Objet::Scrolling(){
 	_image.move(0,_vitesse_scrolling);
 }
+
