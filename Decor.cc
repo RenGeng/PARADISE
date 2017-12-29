@@ -19,7 +19,7 @@ Decor::Decor(string chemins)
 
 }
 
-Decor::Decor(std::string chemins,int vitesse_scrolling)
+Decor::Decor(string chemins,int vitesse_scrolling)
 {
 	if (!_texture.loadFromFile(chemins))
 	{

@@ -5,7 +5,7 @@ int vitesse_course=0;
 Player::Player(std::string chemins,int cptcadre):Decor(chemins){
 	_cptcadre=cptcadre;
 	_pos=1;
-	_image.setPosition(200,400);
+	_image.setPosition(200,500);
 }
 
 

@@ -25,8 +25,8 @@ int main()
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
      //Background
-    Background Fond1("Image/background1.png",VITESSE_SCROLLING);
-    Background Fond2("Image/background2.png",VITESSE_SCROLLING);
+    Background Fond1("Image/background_SW.jpg",VITESSE_SCROLLING);
+    Background Fond2("Image/background_SW.jpg",VITESSE_SCROLLING);
     Fond1.Apparition(window);    
     //Perso
     Player Perso("Image/ST1.png",1);
@@ -49,8 +49,8 @@ int main()
         Fond1.Scrolling(&Fond2);
         Perso.changement_cadre();
         Perso.Apparition(window);
-        if(cpt_objet==100){
-        	Objet Carre("Image/carre.png",VITESSE_SCROLLING);
+        if(cpt_objet==VITESSE_SCROLLING*10){
+        	Objet Carre("Image/cratere.png",VITESSE_SCROLLING);
    			liste_objet.push_back(Carre);
    			cpt_objet=0;
    		}
@@ -59,7 +59,7 @@ int main()
         	liste_objet[i].Scrolling();
         	liste_objet[i].Apparition(window);
         	//gestion collision si on touche l'objet on le retire de la liste
-        	if(liste_objet[i].getPos_x()==Perso.getPos_x() && liste_objet[i].getPos_y()==Perso.getPos_y()) liste_objet.erase(liste_objet.begin()+i);  
+        	if(liste_objet[i].getPos_x()==Perso.getPos_x() && (liste_objet[i].getPos_y()>=Perso.getPos_y() && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y())) liste_objet.erase(liste_objet.begin()+i);  
         
         }
 
