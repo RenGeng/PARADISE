@@ -1,6 +1,7 @@
 # options de compilation
 CC = g++
 CCFLAGS = -Wall
+OPTION = -std=c++11
 LIBS =-lsfml-graphics -lsfml-window -lsfml-system
 
 # fichiers du projet
@@ -26,7 +27,7 @@ Objet.o: Objet.hh Decor.hh
 	
 # règles d'édition de liens
 $(EXEC): $(OBJ)
-	$(CC) -o $@ $^ $(LIBS) 	
+	$(CC) -o $@ $^ $(LIBS) $(OPTION) 	
 
 # règles supplémentaires
 clean:

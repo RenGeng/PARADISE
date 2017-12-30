@@ -3,13 +3,14 @@
 #include <string>
 #include <cstdlib>
 #include <unistd.h>
-#include <vector>
+#include <deque>
+#include <ctime>
 #include "Decor.hh"
 #include "Player.hh"
 #include "Background.hh"
 #include "Evenement.hh"
 #include "Objet.hh"
-#define VITESSE_SCROLLING 10
+#define VITESSE_SCROLLING 5
 
  // Taille de la fenêtre : 800x480 pixels
 const int SCREEN_WIDTH = 480;
@@ -20,6 +21,20 @@ int main()
 {
 	int i,cpt_objet=0;
 	bool stop=false;
+    // Pour afficher le score
+    sf::Font font;
+    if (!font.loadFromFile("CaviarDreams.ttf"))
+    {
+        cout<<"ERREUR CHARGEMENT POLICE"<<endl;
+    }
+    long long score=0;
+    sf::Text text_a_afficher;
+    text_a_afficher.setFont(font);
+    text_a_afficher.setCharacterSize(30);
+    text_a_afficher.setStyle(sf::Text::Bold);
+    text_a_afficher.setColor(sf::Color::Black);
+    text_a_afficher.setPosition(0,0);
+
     //Création fenêtre 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT),"Paperise Run");
     //Modifier position de la fenêtre
@@ -32,7 +47,7 @@ int main()
     //Perso
     Player Perso("Image/ST1.png",1);
 
-    vector<Objet> liste_objet;
+    deque<Objet> liste_objet;
     Objet Carre("Image/cratere.png",VITESSE_SCROLLING);
     // liste_objet.push_back(Carre);
     // liste_objet[0].Apparition(window);
@@ -40,6 +55,17 @@ int main()
     Perso.Apparition(window);
     Evenement event;
 
+
+    // gestion temps apparition aléatoire
+    srand (static_cast <unsigned> (time(0)));
+    float borne_inf = 0.1;
+    float borne_sup = 0.3;
+    float DELAIS_APPARITION_OBSTACLE = (borne_inf + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup-borne_inf))))*10;
+
+    // gestion du temps
+    sf::Time temps_ecoule;
+    float sec;
+    sf::Clock clock;
 
     while(window.isOpen()){
     	if(stop==false){
@@ -49,23 +75,52 @@ int main()
 	        Fond1.Apparition(window);
 	        Fond2.Apparition(window);
 	        Fond1.Scrolling(&Fond2);
+
+             // affichage du score
+            text_a_afficher.setString("SCORE:"+to_string(score));
+            window.draw(text_a_afficher);
+            score++;
+            if(clock.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE)
+                {
+                    liste_objet.push_back(Carre);
+                    liste_objet[liste_objet.size()-1].RandomPos(&Perso);
+                    clock.restart();
+                    DELAIS_APPARITION_OBSTACLE = (borne_inf + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup-borne_inf))))*10;
+                    if(liste_objet.size()>5) liste_objet.pop_front();
+                }
+            for (i = 0; i < liste_objet.size(); ++i)
+            {
+               liste_objet[i].Scrolling();
+               liste_objet[i].Apparition(window);
+             //gestion collision si on touche l'objet on le retire de la liste
+             if(liste_objet[i].getPos_x()+liste_objet[i].getSize_x()/2==Perso.getPos_x()+Perso.getSize_x()/2 && (liste_objet[i].getPos_y()+liste_objet[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
+                 stop=true;
+             }
+            
+            }
+
+
+
+
+	     //    if(cpt_objet==30){
+	   		// 	liste_objet.push_back(Carre);
+	   		// 	liste_objet[liste_objet.size()-1].RandomPos(&Perso);
+	   		// 	cpt_objet=0;
+	   		// }
+	        // for (i = 0; i < liste_objet.size(); ++i)
+	        // {
+         //        if(clock.restart().asMilliseconds()<5)
+         //        {
+	        // 	  liste_objet[i].Scrolling();
+	        // 	  liste_objet[i].Apparition(window);
+         //        }
+	        // 	//gestion collision si on touche l'objet on le retire de la liste
+	        // 	if(liste_objet[i].getPos_x()+liste_objet[i].getSize_x()/2==Perso.getPos_x()+Perso.getSize_x()/2 && (liste_objet[i].getPos_y()+liste_objet[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
+	        // 		liste_objet.erase(liste_objet.begin()+i);  
+	        // 		stop=true;
+	        // 	}
 	        
-	        if(cpt_objet==30){
-	   			liste_objet.push_back(Carre);
-	   			liste_objet[liste_objet.size()-1].RandomPos(&Perso);
-	   			cpt_objet=0;
-	   		}
-	        for (i = 0; i < liste_objet.size(); ++i)
-	        {
-	        	liste_objet[i].Scrolling();
-	        	liste_objet[i].Apparition(window);
-	        	//gestion collision si on touche l'objet on le retire de la liste
-	        	if(liste_objet[i].getPos_x()+liste_objet[i].getSize_x()/2==Perso.getPos_x()+Perso.getSize_x()/2 && (liste_objet[i].getPos_y()+liste_objet[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
-	        		liste_objet.erase(liste_objet.begin()+i);  
-	        		stop=true;
-	        	}
-	        
-	        }
+	        // }
 
 	        Perso.changement_cadre();
         	Perso.Apparition(window);
