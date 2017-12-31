@@ -7,7 +7,7 @@ Decor::Decor(string chemins)
 	if (!_texture.loadFromFile(chemins))
 	{
 		// Erreur
-		cout << "Erreur durant le chargement de l'image de background." << endl;
+		cout << "Erreur durant le chargement de l'image." << endl;
 	}
 	else
 	{
@@ -24,7 +24,7 @@ Decor::Decor(string chemins,int vitesse_scrolling)
 	if (!_texture.loadFromFile(chemins))
 	{
 		// Erreur
-		cout << "Erreur durant le chargement de l'image de background." << endl;
+		cout << "Erreur durant le chargement de l'image." << endl;
 	}
 	else
 	{

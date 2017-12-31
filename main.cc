@@ -10,6 +10,9 @@
 #include "Background.hh"
 #include "Evenement.hh"
 #include "Objet.hh"
+#include "Bonus.hh"
+#include "Obstacle.hh"
+
 #define VITESSE_SCROLLING 10
 
  // Taille de la fenêtre : 800x480 pixels
@@ -19,8 +22,8 @@ using namespace std;
 
 int main()
 {
-	int i,cpt_objet=0;
-	bool stop=false,menu=true;
+    int i,cpt_objet=0;
+    bool stop=false,menu=true;
     // Pour afficher le score
     sf::Font font;
     if (!font.loadFromFile("CaviarDreams.ttf"))
@@ -51,10 +54,12 @@ int main()
     //Perso
     Player Perso("Image/ST1.png",1);
 
-    deque<Objet> liste_objet;
-    Objet Carre("Image/cratere.png",VITESSE_SCROLLING);
-    // liste_objet.push_back(Carre);
-    // liste_objet[0].Apparition(window);
+    deque<Obstacle> liste_objet;
+    Obstacle Carre("Image/cratere.png",VITESSE_SCROLLING);
+    std::vector<Bonus> liste_piece;
+    Bonus piece("Image/Bitcoin.jpg",VITESSE_SCROLLING);
+    int x_random_piece = piece.Random_x();
+    for(i=0;i<5;i++) liste_piece.push_back(piece);
 
     Perso.Apparition(window);
     Evenement event;
@@ -72,17 +77,17 @@ int main()
     sf::Clock clock;
 
     while(window.isOpen()){
-    	if(menu==true){
+        if(menu==true){
             event.Menu(window,&Menu);
             menu=false;
         }
-    	if(stop==false && menu==false){
-	        cpt_objet+=1;
-	        event.ActionPlayer(window,&Perso);
-	        window.clear();
-	        Fond1.Apparition(window);
-	        Fond2.Apparition(window);
-	        Fond1.Scrolling(&Fond2);
+        if(stop==false && menu==false){
+            cpt_objet+=1;
+            event.ActionPlayer(window,&Perso);
+            window.clear();
+            Fond1.Apparition(window);
+            Fond2.Apparition(window);
+            Fond1.Scrolling(&Fond2);
 
              // affichage du score
             text_a_afficher.setString("Score: "+to_string(score));
@@ -90,8 +95,10 @@ int main()
             score++;
             if(clock.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE)
                 {
+                    Carre.RandomPos();
+                    x_random_piece = piece.Random_x();
+                    for(i=0;i<5;i++) liste_piece[i].setPos(x_random_piece,i*-100);
                     liste_objet.push_back(Carre);
-                    liste_objet[liste_objet.size()-1].RandomPos(&Perso);
                     clock.restart();
                     DELAIS_APPARITION_OBSTACLE = (borne_inf + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup-borne_inf))))*10;
                     if(liste_objet.size()>5) liste_objet.pop_front();
@@ -101,110 +108,36 @@ int main()
                liste_objet[i].Scrolling();
                liste_objet[i].Apparition(window);
              //gestion collision si on touche l'objet on le retire de la liste
-             if(liste_objet[i].getPos_x()+liste_objet[i].getSize_x()/2==Perso.getPos_x()+Perso.getSize_x()/2 && (liste_objet[i].getPos_y()+liste_objet[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
+             if(liste_objet[i].getPos_x()==Perso.getPos_x() && (liste_objet[i].getPos_y()+liste_objet[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
                  stop=true;
              }
             
             }
 
+            for(i=0;i<5;i++)
+            {
+                liste_piece[i].Scrolling();
+                liste_piece[i].Apparition(window);
+            }
 
 
 
-	     //    if(cpt_objet==30){
-	   		// 	liste_objet.push_back(Carre);
-	   		// 	liste_objet[liste_objet.size()-1].RandomPos(&Perso);
-	   		// 	cpt_objet=0;
-	   		// }
-	        // for (i = 0; i < liste_objet.size(); ++i)
-	        // {
-         //        if(clock.restart().asMilliseconds()<5)
-         //        {
-	        // 	  liste_objet[i].Scrolling();
-	        // 	  liste_objet[i].Apparition(window);
-         //        }
-	        // 	//gestion collision si on touche l'objet on le retire de la liste
-	        // 	if(liste_objet[i].getPos_x()+liste_objet[i].getSize_x()/2==Perso.getPos_x()+Perso.getSize_x()/2 && (liste_objet[i].getPos_y()+liste_objet[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
-	        // 		liste_objet.erase(liste_objet.begin()+i);  
-	        // 		stop=true;
-	        // 	}
-	        
-	        // }
+            Perso.changement_cadre();
+            Perso.Apparition(window);
+        }
+        else if(stop==true && menu==false){
+            Fond1.Apparition(window);
+            Fond2.Apparition(window);
+            Perso.Apparition(window);               
+        }
 
-	        Perso.changement_cadre();
-        	Perso.Apparition(window);
-    	}
-    	else if(stop==true && menu==false){
-    		Fond1.Apparition(window);
-	        Fond2.Apparition(window);
-	        Perso.Apparition(window);	        	
-    	}
-
-    	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) stop=false;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) stop=false;
        
-    	sf::Event event;
-    	while(window.pollEvent(event)){
-    		//Si on clique sur fermer
-    		if(event.type == sf::Event::Closed) window.close();
-    	}
-
-    	// //Gestion des évènements
-    	// int vitesse=3;
-    	// float saut=100.0;
-    	// int i;
-    	// sleep(0.2);
-    	// if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) Perso.move(0,-vitesse);
-    	// //Gestion des sauts
-    	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)==true and sf::Keyboard::isKeyPressed(sf::Keyboard::Space)==true){
-    	// 	for (i = 0; i < 10; ++i)
-    	// 	{
-    	// 		Perso.move(vitesse,-saut/10);
-    	// 		// window.clear();
-    	// 		// window.draw(background);
-     //            Fond1.Apparition(window);
-    	// 		Perso.Apparition(window);
-    	// 		window.display();
-    	// 	}	
-    	// 	for (i = 0; i < 10; ++i)
-    	// 	{
-    	// 		Perso.move(vitesse,saut/10);
-    	// 		//window.clear();
-    	// 		// window.draw(background);
-     //            Fond1.Apparition(window);
-    	// 		Perso.Apparition(window);
-    	// 		window.display();
-    	// 	}
-    	// }
-    	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) Perso.move(0,vitesse);
-    	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)==true and sf::Keyboard::isKeyPressed(sf::Keyboard::Space)==false) Perso.move(vitesse,0);
-    	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) Perso.move(-vitesse,0);
-    	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
-    		
-    	// 	for (i = 0; i < 10; ++i)
-    	// 	{
-    	// 		Perso.move(0,-saut/10);
-    	// 		// window.clear();
-    	// 		// window.draw(background);
-     //            Fond1.Apparition(window);
-    	// 		Perso.Apparition(window);
-    	// 		window.display();
-    	// 	}	
-    	// 	for (i = 0; i < 10; ++i)
-    	// 	{
-    	// 		Perso.move(0,saut/10);
-    	// 		// window.clear();
-    	// 		// window.draw(background);
-     //            Fond1.Apparition(window);
-    	// 		Perso.Apparition(window);
-    	// 		window.display();
-    	// 	}
-    	// }
-
-     //    Fond1.Apparition(window);
-    	// Perso.Apparition(window);
-     //    Perso.Apparition(window);
-    	// window.display();
-    	// // window.clear();
-
+        sf::Event event;
+        while(window.pollEvent(event)){
+            //Si on clique sur fermer
+            if(event.type == sf::Event::Closed) window.close();
+        }
         window.display();
     }
 
