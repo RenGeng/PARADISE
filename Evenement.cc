@@ -25,3 +25,17 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 	
 	
 }
+
+void Evenement::Menu(sf::RenderWindow &window,Background* Menu){
+	while(window.isOpen()){
+		window.clear();
+		Menu->Apparition(window);
+		window.display();
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) return;
+		sf::Event event1;
+    	while(window.pollEvent(event1)){
+    		//Si on clique sur fermer
+    		if(event1.type == sf::Event::Closed) window.close();
+    	}
+	}
+}

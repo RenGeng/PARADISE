@@ -10,6 +10,7 @@ class Evenement
 public:
 	Evenement();
 	void ActionPlayer(sf::RenderWindow &window,Player* item);
+	void Menu(sf::RenderWindow &window,Background* Menu);
 
 private:
 	int _lastKey; //connaitre le dernier bouton pressé gauche:0 droite:1 aucun:-1, car lorsque l'on presse une touche il enregistre plusieur fois la meme touche

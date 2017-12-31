@@ -10,7 +10,7 @@
 #include "Background.hh"
 #include "Evenement.hh"
 #include "Objet.hh"
-#define VITESSE_SCROLLING 5
+#define VITESSE_SCROLLING 10
 
  // Taille de la fenêtre : 800x480 pixels
 const int SCREEN_WIDTH = 480;
@@ -20,7 +20,7 @@ using namespace std;
 int main()
 {
 	int i,cpt_objet=0;
-	bool stop=false;
+	bool stop=false,menu=true;
     // Pour afficher le score
     sf::Font font;
     if (!font.loadFromFile("CaviarDreams.ttf"))
@@ -41,8 +41,12 @@ int main()
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
      //Background
-    Background Fond1("Image/background_SW.jpg",VITESSE_SCROLLING);
-    Background Fond2("Image/background_SW.jpg",VITESSE_SCROLLING);
+    Background Menu("Image/background_menu.png",0,0);
+    Menu.Apparition(window);
+
+    Background Fond1("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
+    Background Fond2("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
+
     Fond1.Apparition(window);    
     //Perso
     Player Perso("Image/ST1.png",1);
@@ -58,8 +62,8 @@ int main()
 
     // gestion temps apparition aléatoire
     srand (static_cast <unsigned> (time(0)));
-    float borne_inf = 0.1;
-    float borne_sup = 0.3;
+    float borne_inf = 0.05;
+    float borne_sup = 0.1;
     float DELAIS_APPARITION_OBSTACLE = (borne_inf + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup-borne_inf))))*10;
 
     // gestion du temps
@@ -68,7 +72,11 @@ int main()
     sf::Clock clock;
 
     while(window.isOpen()){
-    	if(stop==false){
+    	if(menu==true){
+            event.Menu(window,&Menu);
+            menu=false;
+        }
+    	if(stop==false && menu==false){
 	        cpt_objet+=1;
 	        event.ActionPlayer(window,&Perso);
 	        window.clear();
@@ -77,7 +85,7 @@ int main()
 	        Fond1.Scrolling(&Fond2);
 
              // affichage du score
-            text_a_afficher.setString("SCORE:"+to_string(score));
+            text_a_afficher.setString("Score: "+to_string(score));
             window.draw(text_a_afficher);
             score++;
             if(clock.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE)
@@ -125,7 +133,7 @@ int main()
 	        Perso.changement_cadre();
         	Perso.Apparition(window);
     	}
-    	else if(stop==true){
+    	else if(stop==true && menu==false){
     		Fond1.Apparition(window);
 	        Fond2.Apparition(window);
 	        Perso.Apparition(window);	        	
