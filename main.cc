@@ -54,10 +54,10 @@ int main()
     //Perso
     Player Perso("Image/ST1.png",1);
 
-    deque<Obstacle> liste_objet;
+    deque<Obstacle> liste_obstacle;
     Obstacle Carre("Image/cratere.png",VITESSE_SCROLLING);
     std::vector<Bonus> liste_piece;
-    Bonus piece("Image/Bitcoin.jpg",VITESSE_SCROLLING);
+    Bonus piece("Image/Bitcoin.png",VITESSE_SCROLLING);
     int x_random_piece = piece.Random_x();
     for(i=0;i<5;i++) liste_piece.push_back(piece);
 
@@ -97,18 +97,18 @@ int main()
                 {
                     Carre.RandomPos();
                     x_random_piece = piece.Random_x();
-                    for(i=0;i<5;i++) liste_piece[i].setPos(x_random_piece,i*-100);
-                    liste_objet.push_back(Carre);
+                    for(i=0;i<5;i++) liste_piece[i].setPos(x_random_piece,i*-50);
+                    liste_obstacle.push_back(Carre);
                     clock.restart();
                     DELAIS_APPARITION_OBSTACLE = (borne_inf + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup-borne_inf))))*10;
-                    if(liste_objet.size()>5) liste_objet.pop_front();
+                    if(liste_obstacle.size()>5) liste_obstacle.pop_front();
                 }
-            for (i = 0; i < liste_objet.size(); ++i)
+            for (i = 0; i < liste_obstacle.size(); ++i)
             {
-               liste_objet[i].Scrolling();
-               liste_objet[i].Apparition(window);
+               liste_obstacle[i].Scrolling();
+               liste_obstacle[i].Apparition(window);
              //gestion collision si on touche l'objet on le retire de la liste
-             if(liste_objet[i].getPos_x()==Perso.getPos_x() && (liste_objet[i].getPos_y()+liste_objet[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_objet[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
+             if(liste_obstacle[i].getPos_x()==Perso.getPos_x() && (liste_obstacle[i].getPos_y()+liste_obstacle[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*4/5 && liste_obstacle[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*4/5)){
                  stop=true;
              }
             
