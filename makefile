@@ -5,7 +5,7 @@ OPTION = -std=c++11
 LIBS =-lsfml-graphics -lsfml-window -lsfml-system
 
 # fichiers du projet
-SRC = main.cc Decor.cc Player.cc Evenement.cc Background.cc Objet.cc Bonus.cc Obstacle.cc
+SRC = main.cc Decor.cc Player.cc Evenement.cc Background.cc Objet.cc Bonus.cc Obstacle.cc Piece.cc
 OBJ = $(SRC:.c=.o)
 EXEC = main
 
@@ -21,6 +21,7 @@ Background.o: Background.hh Decor.hh
 Objet.o: Objet.hh Decor.hh
 Bonus.o: Objet.hh Bonus.hh
 Obstacle.o: Objet.hh Obstacle.hh
+Piece.o: Objet.hh Piece.hh
 
 
 # règles de compilation

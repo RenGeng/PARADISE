@@ -15,8 +15,28 @@ void Objet::Scrolling(){
 	_image.move(0,_vitesse_scrolling);
 }
 
-void Objet::RandomPos(){
+
+int Objet::Random_x()
+{
 	srand(time(0));
-	_image.setPosition(_tableau_pos[rand()%4],0);
+	return _tableau_pos[rand()%3];
 }
 
+
+void Objet::RandomPos(Objet& item, const int& random_x_item, const int& random_x)
+{
+	if(random_x_item == random_x)
+	{
+		switch (item._type)
+		{
+			case OBSTACLE:
+			case ETAT:
+				_image.setPosition(random_x,item.getPos_y()-item.getSize_y());
+				break;
+			case PIECE:
+				_image.setPosition(random_x,item.getPos_y()-5*item.getSize_y());
+				break;
+		}
+	}
+	else _image.setPosition(random_x,-1);
+}
