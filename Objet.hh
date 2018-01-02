@@ -14,7 +14,7 @@ class Objet: public Decor
 		Objet(std::string chemins,int vitesse_scrolling);
 		void Apparition(sf::RenderWindow& window);
 		void Scrolling();
-		int Random_x();
+		void Random_x();
 		virtual void RandomPos(Objet& item, const int& random_x_item, const int& random_x);
 
 	protected:

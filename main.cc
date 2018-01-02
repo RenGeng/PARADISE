@@ -23,7 +23,8 @@ using namespace std;
 int main()
 {
     int VITESSE_SCROLLING = 5;
-    int i,j,cpt_objet=0;
+    int pos_piece_y;
+    int i,j;
     bool stop=false,menu=true;
     // Pour afficher le score
     sf::Font font;
@@ -45,8 +46,11 @@ int main()
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
      //Background
-    Background Menu("Image/background_menu.png",0,0);
-    Menu.Apparition(window);
+    Background Menu1("Image/background_menu1.png",0,0);
+    Background Menu2("Image/background_menu2.png",0,0);
+    Background Menu3("Image/background_menu3.png",0,0);
+    Background Menu4("Image/background_menu4.png",0,0);
+    Background Menu5("Image/background_menu5.png",0,0);
 
     Background Fond1("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
     Background Fond2("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
@@ -57,15 +61,17 @@ int main()
 
     //Obstacle
     deque<Obstacle> liste_obstacle;
-    Obstacle Carre("Image/cratere.png",VITESSE_SCROLLING);
+    Obstacle Trou("Image/cratere.png",VITESSE_SCROLLING);
     int x_random_obstacle;
 
     //Piece
+    deque<Piece> liste_piece;
     Piece piece("Image/Bitcoin.png",VITESSE_SCROLLING);
-    int x_random_piece = piece.Random_x();
-    vector<Piece> colonne_piece;
-    for(i=0;i<5;i++) colonne_piece.push_back(piece);
-    deque< vector<Piece> > liste_piece;
+
+    // int x_random_piece = piece.Random_x();
+    // vector<Piece> colonne_piece;
+    // for(i=0;i<5;i++) colonne_piece.push_back(piece);
+    // deque< vector<Piece> > liste_piece;
 
     Perso.Apparition(window);
     Evenement event;
@@ -91,11 +97,10 @@ int main()
     {
         if(menu==true)
         {
-            event.Menu(window,&Menu);
+            event.Menu(window,Menu1,Menu2,Menu3,Menu4,Menu5);
             menu=false;
         }
         if(stop==false && menu==false){
-            cpt_objet+=1;
             event.ActionPlayer(window,&Perso);
             window.clear();
             Fond1.Apparition(window);
@@ -107,63 +112,68 @@ int main()
             window.draw(text_a_afficher);
             score++;
 
-            //gestion des pièces
-            if(clock_piece.getElapsedTime().asSeconds()>DELAIS_APPARITION_PIECE)
-                {
-                    x_random_piece = piece.Random_x();
-                    for(i=0;i<liste_obstacle.size();i++)
-                    {
-                        for(j=0;j<colonne_piece.size();j++) 
-                            {
-                                colonne_piece[j].RandomPos(liste_obstacle[i],x_random_obstacle,x_random_piece);
-                                colonne_piece[j].setPos(x_random_piece,-j*piece.getSize_y());
-                            }
-                    }
-                    liste_piece.push_back(colonne_piece);
-                    if(liste_piece.size()>5) liste_piece.pop_front();
-                    //réinitialisation du clock_pièce
-                    clock_piece.restart();
-                    DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
-                }
+            //-----------Gestion des obstacles-----------//
 
+            //Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
+            if(clock_obstacle.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE){
 
-            //gestion des obstacles
-            if(clock_obstacle.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE)
-                {
-                    x_random_obstacle = Carre.Random_x();
-                    for(i=0;i<liste_piece.size();i++)
-                    {
-                        for(j=0;j<liste_piece[i].size();j++) Carre.RandomPos(liste_piece[i][j],x_random_piece,x_random_obstacle);
-                    }
-                    liste_obstacle.push_back(Carre);
-                    if(liste_obstacle.size()>10) liste_obstacle.pop_front();
-                    //réinitialisation du clock_obstacle
-                    clock_obstacle.restart();
-                    DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
-                }
+            	//Affectation aléatoire de la position du trou
+            	Trou.Random_x();
+            	liste_obstacle.push_back(Trou);
 
-
-            for(i=0;i<liste_piece.size();i++)
-            {
-                for(j=0;j<liste_piece[i].size();j++)
-                {
-                    liste_piece[i][j].Scrolling();
-                    liste_piece[i][j].Apparition(window);
-                }
+            	//Réinitialisation du clock_obstacle
+                clock_obstacle.restart();
+                DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
             }
 
+            //On parcourt les obstacles pour les afficher
             for (i = 0; i < liste_obstacle.size(); ++i)
             {
                liste_obstacle[i].Scrolling();
                liste_obstacle[i].Apparition(window);
-             //gestion collision si on touche l'objet on le retire de la liste
-             if(liste_obstacle[i].getPos_x()==Perso.getPos_x() && (liste_obstacle[i].getPos_y()+liste_obstacle[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*3/4 && liste_obstacle[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*3/4)){
-                 stop=true;
-             }
-            
+
+             	//Gestion collision si on touche l'objet on arrete
+             	if(liste_obstacle[i].getPos_x()==Perso.getPos_x() && 
+             		(liste_obstacle[i].getPos_y()+liste_obstacle[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*3/4 
+             			&& liste_obstacle[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*3/4)) stop=true;
+             	//S'il sort de l'écran on le retire de la liste
+             	else if(liste_obstacle[i].getPos_y()>800) liste_obstacle.erase(liste_obstacle.begin()+i);             	            
             }
 
+            //-----------Gestion des pieces-----------//
+            if(clock_piece.getElapsedTime().asSeconds()>DELAIS_APPARITION_PIECE){
 
+            	//Affectation aléatoire de la position des pieces en x
+            	piece.Random_x();
+
+            	//Affectation aléatoire du nombre de piece entre 3 et 6
+            	srand(time(0));
+            	//Position de la premiere piece
+            	pos_piece_y=0;
+            	for(i=0;i<rand()%5+3;i++){
+            		//On modifie la coordonnée y de chaque piece pour les avoir les unes à la suite des autres
+            		piece.setPos(piece.getPos_x(),pos_piece_y);
+            		pos_piece_y-=50;
+            		liste_piece.push_back(piece);           
+
+            		//réinitialisation du clock_pièce
+                	clock_piece.restart();
+            	    DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
+            	}
+            }
+            //On parcourt les pieces pour les afficher
+            for (i = 0; i < liste_piece.size(); ++i)
+            {
+               liste_piece[i].Scrolling();
+               liste_piece[i].Apparition(window);
+
+             	//Gestion collision si on touche l'objet on retire la piece de la liste
+             	if((liste_piece[i].getPos_x()==Perso.getPos_x() && 
+             		((liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()
+             			&& liste_piece[i].getPos_y()<=Perso.getPos_y()) || (liste_piece[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y() && 
+             			liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()))) || liste_piece[i].getPos_y()>800) 
+             		liste_piece.erase(liste_piece.begin()+i);              	           	            
+            }
 
             Perso.changement_cadre();
             Perso.Apparition(window);
@@ -181,8 +191,8 @@ int main()
             //Si on clique sur fermer
             if(event.type == sf::Event::Closed) window.close();
         }
-        cout<<"x_random_piece="<<x_random_piece<<endl;
-        cout<<"x_random_obstacle="<<x_random_obstacle<<endl;
+        //cout<<liste_obstacle.size()<<endl;
+        // cout<<"x_random_obstacle="<<x_random_obstacle<<endl;
         window.display();
     }
 

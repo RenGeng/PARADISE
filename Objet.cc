@@ -16,10 +16,11 @@ void Objet::Scrolling(){
 }
 
 
-int Objet::Random_x()
+void Objet::Random_x()
 {
 	srand(time(0));
-	return _tableau_pos[rand()%3];
+	_image.setPosition(150*(rand()%3)+50,0);
+	//return _tableau_pos[rand()%3];
 }
 
 
