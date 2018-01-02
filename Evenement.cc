@@ -29,7 +29,7 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 	
 }
 
-void Evenement::Menu(sf::RenderWindow &window,Background Menu1,Background Menu2,Background Menu3,Background Menu4,Background Menu5){
+void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu2,Background &Menu3,Background &Menu4,Background &Menu5){
 	//Clock pour pas devenir épilepthique ...
 	int clock=0;
 	//Définition des vectors menu pour le parcourir à chaque tour

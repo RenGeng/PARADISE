@@ -1,7 +1,7 @@
 # options de compilation
 CC = g++
 CCFLAGS = -Wall
-OPTION = -std=c++11
+OPTION = -std=c++11 -g
 LIBS =-lsfml-graphics -lsfml-window -lsfml-system
 
 # fichiers du projet
