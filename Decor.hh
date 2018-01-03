@@ -17,6 +17,7 @@ public:
 	int getPos_y();
 	int getSize_x();
 	int getSize_y();
+	void setVitesse_Scrolling(int vitesse);
 
 protected:
 	sf::Texture _texture;

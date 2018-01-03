@@ -64,3 +64,7 @@ int Decor::getSize_x(){
 int Decor::getSize_y(){
 	return _texture.getSize().y;
 }
+
+void Decor::setVitesse_Scrolling(int vitesse){
+	_vitesse_scrolling=vitesse;
+}

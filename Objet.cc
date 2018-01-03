@@ -20,7 +20,6 @@ void Objet::Random_x()
 {
 	srand(time(0));
 	_image.setPosition(150*(rand()%3)+50,0);
-	//return _tableau_pos[rand()%3];
 }
 
 
