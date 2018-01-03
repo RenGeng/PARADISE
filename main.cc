@@ -79,34 +79,34 @@ bool stop=false,menu=true;
 vector<Obstacle> liste_obstacle;
 void gestion_objet(sf::Clock& clock_obstacle, float& DELAIS_APPARITION_OBSTACLE, Obstacle& obstacle,sf::RenderWindow& window,Player& Perso)
 {
-    int i;
-//-----------Gestion des obstacles-----------//
+	int i;
+	//-----------Gestion des obstacles-----------//
 
-//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
-if(clock_obstacle.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE){
+	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
+	if(clock_obstacle.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE){
 
-    //Affectation aléatoire de la position du trou
-    obstacle.Random_x();
-    liste_obstacle.push_back(obstacle);
+	    //Affectation aléatoire de la position du trou
+	    obstacle.Random_x();
+	    liste_obstacle.push_back(obstacle);
 
-    //Réinitialisation du clock_obstacle
-    clock_obstacle.restart();
-    DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
-}
+	    //Réinitialisation du clock_obstacle
+	    clock_obstacle.restart();
+	    DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
+	}
 
-//On parcourt les obstacles pour les afficher
-for (i = 0; i < liste_obstacle.size(); ++i)
-{
-   liste_obstacle[i].Scrolling();
-   liste_obstacle[i].Apparition(window);
+	//On parcourt les obstacles pour les afficher
+	for (i = 0; i < liste_obstacle.size(); ++i)
+	{
+	   liste_obstacle[i].Scrolling();
+	   liste_obstacle[i].Apparition(window);
 
-    //Gestion collision si on touche l'objet on arrete
-    if(liste_obstacle[i].getPos_x()==Perso.getPos_x() && 
-        (liste_obstacle[i].getPos_y()+liste_obstacle[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*3/4 
-            && liste_obstacle[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*3/4)) stop=true;
-    //S'il sort de l'écran on le retire de la liste
-    else if(liste_obstacle[i].getPos_y()>800) liste_obstacle.erase(liste_obstacle.begin()+i);                           
-}
+	    //Gestion collision si on touche l'objet on arrete
+	    if(liste_obstacle[i].getPos_x()==Perso.getPos_x() && 
+	        (liste_obstacle[i].getPos_y()+liste_obstacle[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*3/4 
+	            && liste_obstacle[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*3/4) && Perso.getSaut()==false) stop=true;
+	    //S'il sort de l'écran on le retire de la liste
+	    else if(liste_obstacle[i].getPos_y()>800) liste_obstacle.erase(liste_obstacle.begin()+i);                           
+	}
 
 }
 
