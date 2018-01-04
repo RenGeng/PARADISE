@@ -25,9 +25,11 @@ extern float borne_inf_r2d2;
 extern float borne_sup_r2d2;
 extern float DELAIS_APPARITION_R2D2;
 // gestion temps apparition aléatoire missile
-extern float borne_inf_missile;
-extern float borne_sup_missile;
-extern float DELAIS_APPARITION_MISSILE;
+extern float DELAIS_MISSILE;
+
+// le score
+extern unsigned long long score;
+
 
 // à effacer plus tard
 extern bool stop;

@@ -1,14 +1,5 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <iostream>
-#include <string>
-#include <cstdlib>
-#include <unistd.h>
-#include <deque>
-#include <vector>
-#include <ctime>
 #include "Evenement.hh"
-#include "Objet.hh"
+
 
 
 
@@ -30,9 +21,7 @@ using namespace std;
  float borne_sup_r2d2;
  float DELAIS_APPARITION_R2D2;
 // gestion temps apparition aléatoire missile
- float borne_inf_missile;
- float borne_sup_missile;
- float DELAIS_APPARITION_MISSILE;
+ float DELAIS_MISSILE;
 
 // à effacer plus tard
  bool stop;
@@ -42,10 +31,15 @@ using namespace std;
  vector<Missile> liste_missile;
  vector<Ennemi> liste_ennemi;
 
+// Pour afficher le score
+unsigned long long score;
+
 int main()
 {
-    // Initialisation des variables globales
-      VITESSE_SCROLLING = 3.0;
+
+    srand(time(0));
+ // Initialisation des variables globales
+  VITESSE_SCROLLING = 3.0;
 
 // gestion temps apparition aléatoire obstacle
   borne_inf_obstacle = 0.05;
@@ -62,10 +56,10 @@ int main()
   borne_sup_r2d2 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_r2d2;
   DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
 
-// gestion temps apparition aléatoire missile
-  borne_inf_missile = 0.05;
-  borne_sup_missile = 0.06;
-  DELAIS_APPARITION_MISSILE = (borne_inf_missile + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_missile-borne_inf_missile))))*10;
+// gestion temps apparition missile
+  DELAIS_MISSILE = 0.5;
+// Pour afficher le score
+score=0;
 
 	//Chargement des sons
 	sf::Music Menu_son;
@@ -80,8 +74,6 @@ int main()
 	if (!piece_son.openFromFile("Son/piece.wav")) return -1; // erreur
 
     int i;
-    // Pour afficher le score
-    unsigned long long score=0;
     sf::Font font;
     if (!font.loadFromFile("CaviarDreams.ttf"))
     {
@@ -106,27 +98,36 @@ int main()
     Background Menu4("Image/background_menu4.png",0,0);
     Background Menu5("Image/background_menu5.png",0,0);
 
-    Background Fond1("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
-    Background Fond2("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
+    // Conteneur pour la gestion de la vitesse
+    vector<Decor*> liste_vitesse_scrolling;
 
-    Fond1.Apparition(window);    
-    //Perso
-    Player Perso("Image/ST1.png",1);
+
+    //Fond à scrolling infinie
+    Background Fond1("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
+    liste_vitesse_scrolling.push_back(&Fond1);
+    Background Fond2("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
+    liste_vitesse_scrolling.push_back(&Fond2);
 
     //Obstacle
     Obstacle Trou("Image/cratere.png",VITESSE_SCROLLING);
+    liste_vitesse_scrolling.push_back(&Trou);
     Obstacle Vaisseau_ecrase("Image/vaisseau_ecrase.png",VITESSE_SCROLLING);
+    liste_vitesse_scrolling.push_back(&Vaisseau_ecrase);
 
     //Piece
     Piece piece("Image/Bitcoin.png",VITESSE_SCROLLING);
+    liste_vitesse_scrolling.push_back(&piece);
 
     //Ennemi
     Ennemi R2d2("Image/r2d2.png",VITESSE_SCROLLING);
+    liste_vitesse_scrolling.push_back(&R2d2);
 
     //Missile
     Missile missile_rouge("Image/missile.png",0);
 
-    Perso.Apparition(window);
+    //Perso
+    Player Perso("Image/ST1.png",1);
+
     Evenement event;
 
 
@@ -149,23 +150,7 @@ int main()
             Fond2.Apparition(window);
             Fond1.Scrolling(&Fond2);
 
-            //Gestion de la vitesse de scrolling à chaque fois que le score augmente de 10 jusqu'à ce que la vitesse soit egale à 15
-            if(score%20==0 && VITESSE_SCROLLING<8){
-            	VITESSE_SCROLLING+=0.05;
-				borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-0.05;
-				DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
-				borne_sup_piece = borne_sup_obstacle+0.2;
-				DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
-				Fond1.setVitesse_Scrolling(VITESSE_SCROLLING);
-				Fond2.setVitesse_Scrolling(VITESSE_SCROLLING);
-				Trou.setVitesse_Scrolling(VITESSE_SCROLLING);
-				Vaisseau_ecrase.setVitesse_Scrolling(VITESSE_SCROLLING);
-				piece.setVitesse_Scrolling(VITESSE_SCROLLING);
-				R2d2.setVitesse_Scrolling(VITESSE_SCROLLING);
-				for (i = 0; i < liste_obstacle.size(); ++i) liste_obstacle[i].setVitesse_Scrolling(VITESSE_SCROLLING);
-				for (i = 0; i < liste_piece.size(); ++i) liste_piece[i].setVitesse_Scrolling(VITESSE_SCROLLING);
-				for (i = 0; i < liste_ennemi.size(); ++i) liste_ennemi[i].setVitesse_Scrolling(VITESSE_SCROLLING);
-            }
+            event.gestion_vitesse(liste_vitesse_scrolling);
 
             // affichage du score
             text_a_afficher.setString("Score: "+to_string(score));
@@ -173,11 +158,12 @@ int main()
             score++;
 
             // gestion des objets 
-            event.gestion_objet(clock_obstacle,DELAIS_APPARITION_OBSTACLE,Trou,Vaisseau_ecrase,window,Perso);
-             
-            event.gestion_objet(clock_r2d2,DELAIS_APPARITION_R2D2,R2d2,window,Perso,R2D2_son,mort_son);
-            event.gestion_objet(clock_missile,DELAIS_APPARITION_MISSILE,missile_rouge,window,Perso,missile_son);
-            event.gestion_objet(clock_piece,DELAIS_APPARITION_PIECE,piece,window,Perso,piece_son);
+            event.gestion_objet(clock_obstacle,Trou,Vaisseau_ecrase,window,Perso);
+            event.gestion_objet(clock_r2d2,R2d2,window,Perso,R2D2_son,mort_son);
+            event.gestion_objet(clock_missile,missile_rouge,window,Perso,missile_son);
+            event.gestion_objet(clock_piece,piece,window,Perso,piece_son);
+            
+
             Perso.changement_cadre();
             Perso.Apparition(window);
         }

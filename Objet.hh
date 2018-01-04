@@ -1,6 +1,6 @@
 #pragma once
-
 #include "Decor.hh"
+#include "Player.hh"
 #include <vector>
 #include <ctime>
 #include <cstdlib>
@@ -13,5 +13,6 @@ class Objet: public Decor
 		void Apparition(sf::RenderWindow& window);
 		void Scrolling();
 		void Random_x();
+		// virtual void collision(Player&, sf::Music&);
 
 };

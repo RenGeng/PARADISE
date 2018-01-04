@@ -84,7 +84,7 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 	}
 }
 
-void Evenement::gestion_objet(sf::Clock& clock_piece, float& DELAIS_APPARITION_PIECE, Piece& piece,sf::RenderWindow& window,Player& Perso,sf::Music& piece_son)
+void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso,sf::Music& piece_son)
 {
     int i;
     //-----------Gestion des pieces-----------//
@@ -111,22 +111,23 @@ void Evenement::gestion_objet(sf::Clock& clock_piece, float& DELAIS_APPARITION_P
         liste_piece[i].Scrolling();
         liste_piece[i].Apparition(window);
 
-        //Gestion collision si on touche l'objet on retire la piece de la liste
         if((liste_piece[i].getPos_x()==Perso.getPos_x() && 
            ((liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()
             && liste_piece[i].getPos_y()<=Perso.getPos_y()) || (liste_piece[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y() && 
-            liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()))) || liste_piece[i].getPos_y()>800){
+            liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()))))
+        {
             	liste_piece.erase(liste_piece.begin()+i);
             	piece_son.play();
-            }                                       
+        }
+
+        else if (liste_piece[i].getPos_y()>800) liste_piece.erase(liste_piece.begin()+i);                                  
     }
 }
 
 
-void Evenement::gestion_objet(sf::Clock& clock_obstacle, float& DELAIS_APPARITION_OBSTACLE, Obstacle& Trou,Obstacle& Vaisseau_ecrase,sf::RenderWindow& window,Player& Perso)
+void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle& Vaisseau_ecrase,sf::RenderWindow& window,Player& Perso)
 {
 	int i,j;
-	srand(time(0));
 	//-----------Gestion des obstacles-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
@@ -167,21 +168,19 @@ void Evenement::gestion_objet(sf::Clock& clock_obstacle, float& DELAIS_APPARITIO
 
 
 
-void Evenement::gestion_objet(sf::Clock& clock_missile, float& DELAIS_APPARITION_MISSILE, Missile& missile_rouge,sf::RenderWindow& window,Player& Perso,sf::Music& missile_son)
+void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf::RenderWindow& window,Player& Perso,sf::Music& missile_son)
 {
 	int i;
-	srand(time(0));
 	//-----------Gestion des obstacles-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
-	if(clock_missile.getElapsedTime().asSeconds()>DELAIS_APPARITION_MISSILE	&& sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+	if(clock_missile.getElapsedTime().asSeconds()>DELAIS_MISSILE	&& sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
 		missile_rouge.setPos(Perso.getPos_x()+Perso.getSize_x()/4,Perso.getPos_y());
 		liste_missile.push_back(missile_rouge);
 		missile_son.play();
 
 	    //Réinitialisation du clock_r2d2
 	    clock_missile.restart();
-	    DELAIS_APPARITION_MISSILE = (borne_inf_missile + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_missile-borne_inf_missile))))*10;
 	}
 
 	//On parcourt les obstacles pour les afficher
@@ -195,10 +194,9 @@ void Evenement::gestion_objet(sf::Clock& clock_missile, float& DELAIS_APPARITION
 	}
 }
 
-void Evenement::gestion_objet(sf::Clock& clock_r2d2, float& DELAIS_APPARITION_R2D2, Ennemi& R2d2,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& mort_son)
+void Evenement::gestion_objet(sf::Clock& clock_r2d2, Ennemi& R2d2,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& mort_son)
 {
 	int i,j;
-	srand(time(0));
 	//-----------Gestion des ennemis-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'ennemi à la liste 
@@ -226,7 +224,7 @@ void Evenement::gestion_objet(sf::Clock& clock_r2d2, float& DELAIS_APPARITION_R2
 	    //S'il sort de l'écran on le retire de la liste
 	    else if(liste_ennemi[i].getPos_y()>800) liste_ennemi.erase(liste_ennemi.begin()+i); 
 
-	    //On regarde si un ennemi ne tombe pas contre un ennemi car dans ce cas il disparait
+	    //On regarde si un ennemi ne tombe pas contre un obstacle car dans ce cas il disparait
 	    for(j=0; j < liste_obstacle.size();++j){
 	    	if(liste_ennemi[i].getPos_x()==liste_obstacle[j].getPos_x() &&
 	    	 (liste_ennemi[i].getSize_y()*1/2+liste_ennemi[i].getPos_y() > liste_obstacle[j].getPos_y() &&
@@ -244,4 +242,22 @@ void Evenement::gestion_objet(sf::Clock& clock_r2d2, float& DELAIS_APPARITION_R2
 	    	 }
 	    }              
 	}
+}
+
+
+void Evenement::gestion_vitesse(std::vector<Decor*>& liste_vitesse_scrolling)
+{
+	            //Gestion de la vitesse de scrolling à chaque fois que le score augmente de 10 jusqu'à ce que la vitesse soit egale à 15
+            if(score%20==0 && VITESSE_SCROLLING<12)
+            {
+            	VITESSE_SCROLLING+=0.05;
+				borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-0.05;
+				DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
+				borne_sup_piece = borne_sup_obstacle+0.2;
+				DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
+				for(auto& it: liste_vitesse_scrolling) it->setVitesse_Scrolling(VITESSE_SCROLLING);
+				for (auto& it: liste_obstacle) it.setVitesse_Scrolling(VITESSE_SCROLLING);
+				for (auto& it:liste_piece) it.setVitesse_Scrolling(VITESSE_SCROLLING);
+				for (auto& it: liste_ennemi) it.setVitesse_Scrolling(VITESSE_SCROLLING);
+            }
 }
