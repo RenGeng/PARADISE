@@ -23,15 +23,19 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 		}
 		_lastKey=0;
 	}
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) item->move(0,-5);
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) item->move(0,5);
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) item->setSaut(true);
+	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) item->move(0,-5);
+	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) item->move(0,5);
+	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+		item->setSaut(true);
+		 _lastKey=-1;
+	}
 	else _lastKey=-1; //Si on ne presse rien on revient à l'état -1
 	std::vector<float> tab_scale;
+
 	//Si le player est en mode saut
 	if(item->getSaut()){		
-		for (i = 0; i < 20; ++i) tab_scale.push_back(1+i*0.05);
-		for (i = 0; i < 20; ++i) tab_scale.push_back(2-i*0.05);
+		for (i = 0; i < 25; ++i) tab_scale.push_back(1+i*0.75/25);
+		for (i = 0; i < 15; ++i) tab_scale.push_back(1.75-i*0.75/15);
 		item->setDimension(tab_scale[item->get_cpt_saut()],tab_scale[item->get_cpt_saut()]);
 		item->set_cpt_saut(item->get_cpt_saut()+1);
 		if(item->get_cpt_saut()==40){
