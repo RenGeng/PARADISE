@@ -65,7 +65,7 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 	liste_menu.push_back(Menu3);
 	liste_menu.push_back(Menu2);
 
-	while(window.isOpen()){
+	while(1){
 		clock+=1;
 		window.clear();
 		liste_menu[selection_menu].Apparition(window);

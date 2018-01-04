@@ -16,39 +16,10 @@
 #include "Obstacle.hh"
 #include "Piece.hh"
 #include "Missile.hh"
-
- // Taille de la fenêtre : 800x480 pixels
-const int SCREEN_WIDTH = 480;
-const int SCREEN_HEIGHT = 800;
-using namespace std;
+#include "Variable_global.hh"
 
 
-float VITESSE_SCROLLING = 3.0;
-
-// gestion temps apparition aléatoire obstacle
-float borne_inf_obstacle = 0.05;
-float borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_obstacle;
-float DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
-
-// gestion temps apparition aléatoire pièce
-float borne_inf_piece = 0.2;
-float borne_sup_piece = borne_sup_obstacle+0.2;
-float DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
-
-// gestion temps apparition aléatoire r2d2
-float borne_inf_r2d2 = 0.05;
-float borne_sup_r2d2 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_r2d2;
-float DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
-
-// gestion temps apparition aléatoire missile
-float borne_inf_missile = 0.05;
-float borne_sup_missile = 0.06;
-float DELAIS_APPARITION_MISSILE = (borne_inf_missile + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_missile-borne_inf_missile))))*10;
-
-
-
-
-vector<Piece> liste_piece;
+// vector<Piece> liste_piece;
 void gestion_objet(sf::Clock& clock_piece, float& DELAIS_APPARITION_PIECE, Piece& piece,sf::RenderWindow& window,Player& Perso,sf::Music& piece_son)
 {
     int i;
@@ -87,10 +58,8 @@ void gestion_objet(sf::Clock& clock_piece, float& DELAIS_APPARITION_PIECE, Piece
     }
 }
 
-// à effacer plus tard
-bool stop=false,menu=true;
 
-vector<Obstacle> liste_obstacle;
+// vector<Obstacle> liste_obstacle;
 void gestion_objet(sf::Clock& clock_obstacle, float& DELAIS_APPARITION_OBSTACLE, Obstacle& Trou,Obstacle& Vaisseau_ecrase,sf::RenderWindow& window,Player& Perso)
 {
 	int i,j;
@@ -285,16 +254,13 @@ int main()
     sf::Clock clock_r2d2;
     sf::Clock clock_missile;
 
+    Menu_son.play();
+    event.Menu(window,Menu1,Menu2,Menu3,Menu4,Menu5);
+    Menu_son.stop();
+
     while(window.isOpen())
-    {
-        if(menu==true)
-        {	
-        	Menu_son.play();
-            event.Menu(window,Menu1,Menu2,Menu3,Menu4,Menu5);
-            menu=false;
-        }
-        if(stop==false && menu==false){
-        	Menu_son.stop();
+    {       
+        if(stop==false){
             event.ActionPlayer(window,&Perso);
             window.clear();
             Fond1.Apparition(window);
@@ -333,7 +299,7 @@ int main()
             Perso.changement_cadre();
             Perso.Apparition(window);
         }
-        else if(stop==true && menu==false){
+        else if(stop==true){
             Fond1.Apparition(window);
             Fond2.Apparition(window);
             Perso.Apparition(window);               
