@@ -14,16 +14,17 @@ EXEC = main
 all: $(EXEC)
 
 # dépendance des .hh
+
 Decor.o: Decor.hh
 Player.o: Player.hh Decor.hh
-Evenement.o: Evenement.hh
+Evenement.o: Evenement.hh Variable_global.hh
 Background.o: Background.hh Decor.hh
 Objet.o: Objet.hh Decor.hh
 Ennemi.o: Objet.hh Ennemi.hh
 Obstacle.o: Objet.hh Obstacle.hh
 Piece.o: Objet.hh Piece.hh
 Missile.o: Objet.hh Missile.hh
-
+main.o: Variable_global.hh Evenement.hh
 
 # règles de compilation
 %.o: %.c

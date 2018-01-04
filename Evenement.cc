@@ -83,3 +83,165 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
     	}
 	}
 }
+
+void Evenement::gestion_objet(sf::Clock& clock_piece, float& DELAIS_APPARITION_PIECE, Piece& piece,sf::RenderWindow& window,Player& Perso,sf::Music& piece_son)
+{
+    int i;
+    //-----------Gestion des pieces-----------//
+    if(clock_piece.getElapsedTime().asSeconds()>DELAIS_APPARITION_PIECE)
+    {
+        //Affectation aléatoire de la position des pieces en x
+        piece.Random_x();
+
+        //Affectation aléatoire du nombre de piece entre 3 et 6
+        for(i=0;i<rand()%5+3;i++)
+        {
+            //On modifie la coordonnée y de chaque piece pour les avoir les unes à la suite des autres
+            piece.setPos(piece.getPos_x(),-50*i);
+            liste_piece.push_back(piece);           
+
+            //réinitialisation du clock_pièce
+            clock_piece.restart();
+            DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
+        }
+    }
+    //On parcourt les pieces pour les afficher
+    for (i = 0; i < liste_piece.size(); ++i)
+    {
+        liste_piece[i].Scrolling();
+        liste_piece[i].Apparition(window);
+
+        //Gestion collision si on touche l'objet on retire la piece de la liste
+        if((liste_piece[i].getPos_x()==Perso.getPos_x() && 
+           ((liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()
+            && liste_piece[i].getPos_y()<=Perso.getPos_y()) || (liste_piece[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y() && 
+            liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()))) || liste_piece[i].getPos_y()>800){
+            	liste_piece.erase(liste_piece.begin()+i);
+            	piece_son.play();
+            }                                       
+    }
+}
+
+
+void Evenement::gestion_objet(sf::Clock& clock_obstacle, float& DELAIS_APPARITION_OBSTACLE, Obstacle& Trou,Obstacle& Vaisseau_ecrase,sf::RenderWindow& window,Player& Perso)
+{
+	int i,j;
+	srand(time(0));
+	//-----------Gestion des obstacles-----------//
+
+	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
+	if(clock_obstacle.getElapsedTime().asSeconds()>DELAIS_APPARITION_OBSTACLE){
+
+		//On choisit entre le vaisseau (1 chance sur 5) et le trou 
+		if(rand()%5==0){
+			//Affectation aléatoire de la position du trou ou du vaisseau
+			Vaisseau_ecrase.Random_x();
+	    	liste_obstacle.push_back(Vaisseau_ecrase);
+		}
+		else{
+			//Affectation aléatoire de la position du trou ou du vaisseau
+	    	Trou.Random_x();
+	    	liste_obstacle.push_back(Trou);
+	    }
+
+	    //Réinitialisation du clock_obstacle
+	    clock_obstacle.restart();
+	    DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
+	}
+
+	//On parcourt les obstacles pour les afficher
+	for (i = 0; i < liste_obstacle.size(); ++i)
+	{
+	   liste_obstacle[i].Scrolling();
+	   liste_obstacle[i].Apparition(window);
+
+	    //Gestion collision si on touche l'objet on arrete
+	    if(liste_obstacle[i].getPos_x()==Perso.getPos_x() && 
+	        (liste_obstacle[i].getPos_y()+liste_obstacle[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*3/4 
+	            && liste_obstacle[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*3/4) && Perso.getSaut()==false) stop=true;
+	    //S'il sort de l'écran on le retire de la liste
+	    else if(liste_obstacle[i].getPos_y()>800) liste_obstacle.erase(liste_obstacle.begin()+i);                           
+	}
+
+}
+
+
+
+void Evenement::gestion_objet(sf::Clock& clock_missile, float& DELAIS_APPARITION_MISSILE, Missile& missile_rouge,sf::RenderWindow& window,Player& Perso,sf::Music& missile_son)
+{
+	int i;
+	srand(time(0));
+	//-----------Gestion des obstacles-----------//
+
+	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
+	if(clock_missile.getElapsedTime().asSeconds()>DELAIS_APPARITION_MISSILE	&& sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+		missile_rouge.setPos(Perso.getPos_x()+Perso.getSize_x()/4,Perso.getPos_y());
+		liste_missile.push_back(missile_rouge);
+		missile_son.play();
+
+	    //Réinitialisation du clock_r2d2
+	    clock_missile.restart();
+	    DELAIS_APPARITION_MISSILE = (borne_inf_missile + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_missile-borne_inf_missile))))*10;
+	}
+
+	//On parcourt les obstacles pour les afficher
+	for (i = 0; i < liste_missile.size(); ++i)
+	{
+	   liste_missile[i].Avance();
+	   liste_missile[i].Apparition(window);
+
+	   //Si le missile sort de l'écran on le supprime de la liste      
+	   if(liste_missile[i].getPos_y()<0) liste_missile.erase(liste_missile.begin()+i);                
+	}
+}
+
+void Evenement::gestion_objet(sf::Clock& clock_r2d2, float& DELAIS_APPARITION_R2D2, Ennemi& R2d2,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& mort_son)
+{
+	int i,j;
+	srand(time(0));
+	//-----------Gestion des ennemis-----------//
+
+	//Si la clock est supérieur au délai d'apparation on ajoute l'ennemi à la liste 
+	if(clock_r2d2.getElapsedTime().asSeconds()>DELAIS_APPARITION_R2D2){
+		R2d2.Random_x();
+		liste_ennemi.push_back(R2d2);
+		R2D2_son.play();
+
+	    //Réinitialisation du clock_r2d2
+	    clock_r2d2.restart();
+	    DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
+	}
+
+	//On parcourt les ennemis pour les afficher
+	for (i = 0; i < liste_ennemi.size(); ++i)
+	{
+	   liste_ennemi[i].Scrolling();
+	   liste_ennemi[i].Avance();
+	   liste_ennemi[i].Apparition(window);
+
+	    //Gestion collision si on touche l'objet on arrete et on ne peut pas sauter par dessus un ennemi !
+	    if(liste_ennemi[i].getPos_x()==Perso.getPos_x() && 
+	        (liste_ennemi[i].getPos_y()+liste_ennemi[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()
+	            && liste_ennemi[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y())) stop=true;
+	    //S'il sort de l'écran on le retire de la liste
+	    else if(liste_ennemi[i].getPos_y()>800) liste_ennemi.erase(liste_ennemi.begin()+i); 
+
+	    //On regarde si un ennemi ne tombe pas contre un ennemi car dans ce cas il disparait
+	    for(j=0; j < liste_obstacle.size();++j){
+	    	if(liste_ennemi[i].getPos_x()==liste_obstacle[j].getPos_x() &&
+	    	 (liste_ennemi[i].getSize_y()*1/2+liste_ennemi[i].getPos_y() > liste_obstacle[j].getPos_y() &&
+	    	 	liste_ennemi[i].getPos_y()<liste_obstacle[j].getPos_y())) liste_ennemi.erase(liste_ennemi.begin()+i); 
+	    }           
+
+	    //On regarde si un missile touche pas l'ennemi sinon on supprime l'ennemi
+	    for(j=0; j < liste_missile.size();++j){
+	    	if(liste_ennemi[i].getPos_x()==liste_missile[j].getPos_x()-Perso.getSize_x()/4 &&
+	    	 (liste_ennemi[i].getSize_y()*1/2+liste_ennemi[i].getPos_y() > liste_missile[j].getPos_y() &&
+	    	 	liste_ennemi[i].getPos_y()<liste_missile[j].getPos_y())){
+	    	 	liste_ennemi.erase(liste_ennemi.begin()+i);
+	    	 	liste_missile.erase(liste_missile.begin()+j);
+	    	 	mort_son.play();
+	    	 }
+	    }              
+	}
+}
