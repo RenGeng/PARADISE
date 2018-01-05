@@ -2,11 +2,7 @@
 #define VITESSE_COURSE 5 //Gère la vitesse de changement car les sleeps c'est galere
 int vitesse_course=0;
 
-Player::Player(std::string chemins,int cptcadre):Decor(chemins){
-	_cptcadre=cptcadre;
-	_pos=1;
-	_saut=false;
-	_cpt_saut=0;
+Player::Player(std::string chemins,int cptcadre):Decor(chemins),_cptcadre(cptcadre),_pos(1),_saut(false),_cpt_saut(0),_cpt_piece(0){
 	_image.setPosition(200,500);
 }
 
@@ -50,4 +46,14 @@ int Player::get_cpt_saut(){
 
 void Player::set_cpt_saut(int cpt){
 	_cpt_saut=cpt;
+}
+
+void Player::inc_piece()
+{
+	_cpt_piece++;
+}
+
+int Player::get_cpt_piece()
+{
+	return _cpt_piece;
 }

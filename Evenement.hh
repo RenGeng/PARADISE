@@ -21,8 +21,9 @@ public:
 	void gestion_objet(sf::Clock& clock_missile, Missile& missile_rouge,sf::RenderWindow& window,Player& Perso,sf::Music& missile_son);
 	void gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& C3po_son,sf::Music& mort_son);
 
-	// gestion du scrore
+	// gestion du niveau du jeu
 	void gestion_vitesse(std::vector<Decor*>&);
+	void gestion_difficulte();
 
 private:
 	int _lastKey; //connaitre le dernier bouton pressé gauche:0 droite:1 aucun:-1, car lorsque l'on presse une touche il enregistre plusieur fois la meme touche

@@ -13,6 +13,4 @@ class Objet: public Decor
 		void Apparition(sf::RenderWindow& window);
 		void Scrolling();
 		void Random_x();
-		// virtual void collision(Player&, sf::Music&);
-
 };

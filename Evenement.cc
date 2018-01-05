@@ -116,6 +116,7 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
             && liste_piece[i].getPos_y()<=Perso.getPos_y()) || (liste_piece[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y() && 
             liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()))))
         {
+        		Perso.inc_piece();
             	liste_piece.erase(liste_piece.begin()+i);
             	piece_son.play();
         }
@@ -201,7 +202,6 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'ennemi à la liste 
 	if(clock_ennemi.getElapsedTime().asSeconds()>DELAIS_APPARITION_R2D2){
-		srand(time(0));
 		if(rand()%3==0){
 			C3po.Random_x();
 			liste_ennemi.push_back(C3po);
@@ -241,8 +241,7 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 	    		//S'il est tout à gauche il va à doire
 	    		if(liste_ennemi[i].getPos_x()==50) liste_ennemi[i].setPos(liste_ennemi[i].getPos_x()+150,liste_ennemi[i].getPos_y());
 	    		//S'il est au milieu il va à gauche ou à droite
-	    		else if(liste_ennemi[i].getPos_x()==200){
-	    			srand(time(0));	    			
+	    		else if(liste_ennemi[i].getPos_x()==200){  			
 	    			liste_ennemi[i].setPos(300*rand()%2+50,liste_ennemi[i].getPos_y());
 	    		}
 	    		//S'il est à gauche il va à droite
@@ -271,13 +270,23 @@ void Evenement::gestion_vitesse(std::vector<Decor*>& liste_vitesse_scrolling)
 	if(score%20==0 && VITESSE_SCROLLING<10)
 	{
 		VITESSE_SCROLLING+=0.05;
-		borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-0.05;
-		DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
-		borne_sup_piece = borne_sup_obstacle+0.2;
-		DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
 		for(auto& it: liste_vitesse_scrolling) it->setVitesse_Scrolling(VITESSE_SCROLLING);
 		for (auto& it: liste_obstacle) it.setVitesse_Scrolling(VITESSE_SCROLLING);
 		for (auto& it:liste_piece) it.setVitesse_Scrolling(VITESSE_SCROLLING);
 		for (auto& it: liste_ennemi) it.setVitesse_Scrolling(VITESSE_SCROLLING);
 	}
+}
+
+void Evenement::gestion_difficulte()
+{
+	if(score%250==0)
+	{
+		if(borne_inf_obstacle>0.01)	borne_inf_obstacle-=0.01;
+		if(borne_sup_obstacle>borne_inf_obstacle+0.05)	borne_sup_obstacle-=0.05;
+
+		if(borne_inf_r2d2>0.04) borne_inf_r2d2-=0.01;
+		if(borne_sup_r2d2>borne_inf_r2d2+0.07) borne_sup_r2d2-=0.02;
+
+	}
+	
 }

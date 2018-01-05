@@ -78,21 +78,30 @@ int main()
 	if (!piece_son.openFromFile("Son/piece.wav")) return -1; // erreur
 
     int i;
+
+    //CHARGEMENT DU TEXT A AFFICHER
     sf::Font font;
     if (!font.loadFromFile("CaviarDreams.ttf")) cout<<"ERREUR CHARGEMENT POLICE"<<endl;
-
-    sf::Text text_a_afficher;
-    text_a_afficher.setFont(font);
-    text_a_afficher.setCharacterSize(30);
-    text_a_afficher.setStyle(sf::Text::Bold);
-    text_a_afficher.setColor(sf::Color::Black);
-    text_a_afficher.setPosition(0,0);
+    sf::Text text_score;
+    text_score.setFont(font);
+    text_score.setCharacterSize(30);
+    text_score.setStyle(sf::Text::Bold);
+    text_score.setColor(sf::Color::Red);
+    text_score.setPosition(5,0);
+    sf::Text text_piece;
+    text_piece.setFont(font);
+    text_piece.setCharacterSize(30);
+    text_piece.setStyle(sf::Text::Bold);
+    text_piece.setColor(sf::Color::Red);
+    text_piece.setPosition(60,45);
 
     //Création fenêtre 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT),"Paperise Run");
     //Modifier position de la fenêtre
     window.setPosition(sf::Vector2i(200,200)); //A modifier selon les écrans
     window.setFramerateLimit(60);
+
+
     //Background
     Background Menu1("Image/background_menu1.png",0,0);
     Background Menu2("Image/background_menu2.png",0,0);
@@ -157,11 +166,7 @@ int main()
             Fond1.Scrolling(&Fond2);
 
             event.gestion_vitesse(liste_vitesse_scrolling);
-
-            // affichage du score
-            text_a_afficher.setString("Score: "+to_string(score));
-            window.draw(text_a_afficher);
-            score++;
+            event.gestion_difficulte();
 
             // gestion des objets 
             event.gestion_objet(clock_obstacle,Trou,Vaisseau_ecrase,window,Perso);
@@ -169,6 +174,17 @@ int main()
             event.gestion_objet(clock_missile,missile_rouge,window,Perso,missile_son);
             event.gestion_objet(clock_piece,piece,window,Perso,piece_son);
             
+
+            // affichage du score
+            text_score.setString("Score: "+to_string(score));
+            window.draw(text_score);
+            score++;
+
+            // affichage du nombre de pièce ramassé
+            piece.setPos(5,45);
+            piece.Apparition(window);
+            text_piece.setString(to_string(Perso.get_cpt_piece()));
+            window.draw(text_piece);
 
             Perso.changement_cadre();
             Perso.Apparition(window);
