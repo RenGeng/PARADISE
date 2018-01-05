@@ -179,7 +179,7 @@ void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf
 		liste_missile.push_back(missile_rouge);
 		missile_son.play();
 
-	    //Réinitialisation du clock_r2d2
+	    //Réinitialisation du clock_ennemi
 	    clock_missile.restart();
 	}
 
@@ -194,19 +194,27 @@ void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf
 	}
 }
 
-void Evenement::gestion_objet(sf::Clock& clock_r2d2, Ennemi& R2d2,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& mort_son)
+void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& C3po_son,sf::Music& mort_son)
 {
 	int i,j;
 	//-----------Gestion des ennemis-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'ennemi à la liste 
-	if(clock_r2d2.getElapsedTime().asSeconds()>DELAIS_APPARITION_R2D2){
-		R2d2.Random_x();
-		liste_ennemi.push_back(R2d2);
-		R2D2_son.play();
+	if(clock_ennemi.getElapsedTime().asSeconds()>DELAIS_APPARITION_R2D2){
+		srand(time(0));
+		if(rand()%3==0){
+			C3po.Random_x();
+			liste_ennemi.push_back(C3po);
+			C3po_son.play();			
+		}
+		else{
+			R2d2.Random_x();
+			liste_ennemi.push_back(R2d2);
+			R2D2_son.play();			
+		}
 
-	    //Réinitialisation du clock_r2d2
-	    clock_r2d2.restart();
+	    //Réinitialisation du clock_ennemi
+	    clock_ennemi.restart();
 	    DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
 	}
 
@@ -224,11 +232,22 @@ void Evenement::gestion_objet(sf::Clock& clock_r2d2, Ennemi& R2d2,sf::RenderWind
 	    //S'il sort de l'écran on le retire de la liste
 	    else if(liste_ennemi[i].getPos_y()>800) liste_ennemi.erase(liste_ennemi.begin()+i); 
 
-	    //On regarde si un ennemi ne tombe pas contre un obstacle car dans ce cas il disparait
+	    //On regarde si un ennemi ne tombe pas contre un obstacle car dans ce cas il se décale
 	    for(j=0; j < liste_obstacle.size();++j){
 	    	if(liste_ennemi[i].getPos_x()==liste_obstacle[j].getPos_x() &&
-	    	 (liste_ennemi[i].getSize_y()*1/2+liste_ennemi[i].getPos_y() > liste_obstacle[j].getPos_y() &&
-	    	 	liste_ennemi[i].getPos_y()<liste_obstacle[j].getPos_y())) liste_ennemi.erase(liste_ennemi.begin()+i); 
+	    	 (liste_ennemi[i].getSize_y()+liste_ennemi[i].getPos_y() > liste_obstacle[j].getPos_y() &&
+	    	 	liste_ennemi[i].getPos_y()<liste_obstacle[j].getPos_y())){
+
+	    		//S'il est tout à gauche il va à doire
+	    		if(liste_ennemi[i].getPos_x()==50) liste_ennemi[i].setPos(liste_ennemi[i].getPos_x()+150,liste_ennemi[i].getPos_y());
+	    		//S'il est au milieu il va à gauche ou à droite
+	    		else if(liste_ennemi[i].getPos_x()==200){
+	    			srand(time(0));	    			
+	    			liste_ennemi[i].setPos(300*rand()%2+50,liste_ennemi[i].getPos_y());
+	    		}
+	    		//S'il est à gauche il va à droite
+	    		else if(liste_ennemi[i].getPos_x()==350) liste_ennemi[i].setPos(liste_ennemi[i].getPos_x()-150,liste_ennemi[i].getPos_y());
+	    	}
 	    }           
 
 	    //On regarde si un missile touche pas l'ennemi sinon on supprime l'ennemi
@@ -239,6 +258,7 @@ void Evenement::gestion_objet(sf::Clock& clock_r2d2, Ennemi& R2d2,sf::RenderWind
 	    	 	liste_ennemi.erase(liste_ennemi.begin()+i);
 	    	 	liste_missile.erase(liste_missile.begin()+j);
 	    	 	mort_son.play();
+	    	 	C3po_son.stop();
 	    	 }
 	    }              
 	}
@@ -247,17 +267,17 @@ void Evenement::gestion_objet(sf::Clock& clock_r2d2, Ennemi& R2d2,sf::RenderWind
 
 void Evenement::gestion_vitesse(std::vector<Decor*>& liste_vitesse_scrolling)
 {
-	            //Gestion de la vitesse de scrolling à chaque fois que le score augmente de 10 jusqu'à ce que la vitesse soit egale à 15
-            if(score%20==0 && VITESSE_SCROLLING<12)
-            {
-            	VITESSE_SCROLLING+=0.05;
-				borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-0.05;
-				DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
-				borne_sup_piece = borne_sup_obstacle+0.2;
-				DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
-				for(auto& it: liste_vitesse_scrolling) it->setVitesse_Scrolling(VITESSE_SCROLLING);
-				for (auto& it: liste_obstacle) it.setVitesse_Scrolling(VITESSE_SCROLLING);
-				for (auto& it:liste_piece) it.setVitesse_Scrolling(VITESSE_SCROLLING);
-				for (auto& it: liste_ennemi) it.setVitesse_Scrolling(VITESSE_SCROLLING);
-            }
+	//Gestion de la vitesse de scrolling à chaque fois que le score augmente de 10 jusqu'à ce que la vitesse soit egale à 15
+	if(score%20==0 && VITESSE_SCROLLING<10)
+	{
+		VITESSE_SCROLLING+=0.05;
+		borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-0.05;
+		DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
+		borne_sup_piece = borne_sup_obstacle+0.2;
+		DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
+		for(auto& it: liste_vitesse_scrolling) it->setVitesse_Scrolling(VITESSE_SCROLLING);
+		for (auto& it: liste_obstacle) it.setVitesse_Scrolling(VITESSE_SCROLLING);
+		for (auto& it:liste_piece) it.setVitesse_Scrolling(VITESSE_SCROLLING);
+		for (auto& it: liste_ennemi) it.setVitesse_Scrolling(VITESSE_SCROLLING);
+	}
 }

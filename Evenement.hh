@@ -19,7 +19,7 @@ public:
 	void gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso,sf::Music& piece_son);
 	void gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle& Vaisseau_ecrase,sf::RenderWindow& window,Player& Perso);
 	void gestion_objet(sf::Clock& clock_missile, Missile& missile_rouge,sf::RenderWindow& window,Player& Perso,sf::Music& missile_son);
-	void gestion_objet(sf::Clock& clock_r2d2,Ennemi& R2d2,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& mort_son);
+	void gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& C3po_son,sf::Music& mort_son);
 
 	// gestion du scrore
 	void gestion_vitesse(std::vector<Decor*>&);
