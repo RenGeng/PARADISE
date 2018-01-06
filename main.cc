@@ -108,6 +108,12 @@ int main()
     Background Menu3("Image/background_menu3.png",0,0);
     Background Menu4("Image/background_menu4.png",0,0);
     Background Menu5("Image/background_menu5.png",0,0);
+    Background Commande("Image/commande.png",0,0);
+
+    Evenement event;
+    Menu_son.play();
+    event.Menu(window,Menu1,Menu2,Menu3,Menu4,Menu5,Commande);
+    Menu_son.stop();
 
     // Conteneur pour la gestion de la vitesse
     vector<Decor*> liste_vitesse_scrolling;
@@ -141,18 +147,11 @@ int main()
     //Perso
     Player Perso("Image/ST1.png",1);
 
-    Evenement event;
-
-
     // gestion du temps
     sf::Clock clock_obstacle;
     sf::Clock clock_piece;
     sf::Clock clock_ennemi;
     sf::Clock clock_missile;
-
-    Menu_son.play();
-    event.Menu(window,Menu1,Menu2,Menu3,Menu4,Menu5);
-    Menu_son.stop();
 
     while(window.isOpen())
     {       

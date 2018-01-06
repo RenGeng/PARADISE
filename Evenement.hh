@@ -13,7 +13,7 @@ class Evenement
 public:
 	Evenement();
 	void ActionPlayer(sf::RenderWindow &window,Player* item);
-	void Menu(sf::RenderWindow &window,Background& Menu1,Background& Menu2,Background& Menu3,Background& Menu4,Background& Menu5);
+	void Menu(sf::RenderWindow &window,Background& Menu1,Background& Menu2,Background& Menu3,Background& Menu4,Background& Menu5,Background& Commande) const;
 
 	/* GESTION DES DIVERS OBJETS */
 	void gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso,sf::Music& piece_son);

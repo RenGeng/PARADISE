@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Decor.hh"
+#include "Background.hh"
 
 class Player: public Decor
 {
@@ -16,6 +16,7 @@ public:
 	void set_cpt_saut(int cpt);
 	void inc_piece(); // méthode pour incrémenter cpt_pièce
 	int get_cpt_piece();
+	void game_over(sf::RenderWindow&);
 
 
 private:

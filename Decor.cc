@@ -50,18 +50,18 @@ void Decor::setPos(int x, int y)
 	_image.setPosition(x,y);
 }
 
-int Decor::getPos_x(){
+int Decor::getPos_x() const{
 	return _image.getPosition().x;
 }
 
-int Decor::getPos_y(){
+int Decor::getPos_y() const{
 	return _image.getPosition().y;
 }
 
-int Decor::getSize_x(){
+int Decor::getSize_x() const{
 	return _texture.getSize().x;
 }
-int Decor::getSize_y(){
+int Decor::getSize_y() const{
 	return _texture.getSize().y;
 }
 

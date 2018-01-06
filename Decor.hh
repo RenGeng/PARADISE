@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#pragma once
 #include <iostream>
 
 class Decor
@@ -13,10 +14,10 @@ public:
 	void setDimension(double coeffLargeur, double coeffHauteur); // Pour redimensionner l'image
 	void move(int x, int y);
 	void setPos(int x, int y);
-	int getPos_x();
-	int getPos_y();
-	int getSize_x();
-	int getSize_y();
+	int getPos_x() const;
+	int getPos_y() const ;
+	int getSize_x() const;
+	int getSize_y() const;
 	void setVitesse_Scrolling(int vitesse);
 
 protected:

@@ -50,7 +50,7 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 	
 }
 
-void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu2,Background &Menu3,Background &Menu4,Background &Menu5){
+void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu2,Background &Menu3,Background &Menu4,Background &Menu5,Background& Commande) const{
 	//Clock pour pas devenir épilepthique ...
 	int clock=0;
 	//Définition des vectors menu pour le parcourir à chaque tour
@@ -64,8 +64,10 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 	liste_menu.push_back(Menu4);
 	liste_menu.push_back(Menu3);
 	liste_menu.push_back(Menu2);
+	sf::Event event1;
 
-	while(1){
+	while(1)
+	{
 		clock+=1;
 		window.clear();
 		liste_menu[selection_menu].Apparition(window);
@@ -75,12 +77,20 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 			clock=0;
 		}
 		window.display();
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) return;
-		sf::Event event1;
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) break;
+		
     	while(window.pollEvent(event1)){
     		//Si on clique sur fermer
     		if(event1.type == sf::Event::Closed) window.close();
     	}
+	}
+
+	while(1)
+	{
+		window.clear();
+		Commande.Apparition(window);
+		window.display();
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) break;
 	}
 }
 
@@ -117,6 +127,7 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
             liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()))))
         {
         		Perso.inc_piece();
+        		score+=liste_piece[i].get_val_piece();
             	liste_piece.erase(liste_piece.begin()+i);
             	piece_son.play();
         }
@@ -128,7 +139,7 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
 
 void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle& Vaisseau_ecrase,sf::RenderWindow& window,Player& Perso)
 {
-	int i,j;
+	int i;
 	//-----------Gestion des obstacles-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
@@ -158,11 +169,9 @@ void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle&
 	   liste_obstacle[i].Apparition(window);
 
 	    //Gestion collision si on touche l'objet on arrete
-	    if(liste_obstacle[i].getPos_x()==Perso.getPos_x() && 
-	        (liste_obstacle[i].getPos_y()+liste_obstacle[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()*3/4 
-	            && liste_obstacle[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y()*3/4) && Perso.getSaut()==false) stop=true;
+	   	liste_obstacle[i].Collision(Perso,window);
 	    //S'il sort de l'écran on le retire de la liste
-	    else if(liste_obstacle[i].getPos_y()>800) liste_obstacle.erase(liste_obstacle.begin()+i);                           
+	    if(liste_obstacle[i].getPos_y()>800) liste_obstacle.erase(liste_obstacle.begin()+i);                           
 	}
 
 }
@@ -226,34 +235,21 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 	   liste_ennemi[i].Apparition(window);
 
 	    //Gestion collision si on touche l'objet on arrete et on ne peut pas sauter par dessus un ennemi !
-	    if(liste_ennemi[i].getPos_x()==Perso.getPos_x() && 
-	        (liste_ennemi[i].getPos_y()+liste_ennemi[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()
-	            && liste_ennemi[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y())) stop=true;
+	   liste_ennemi[i].Collision(Perso,window);
+
 	    //S'il sort de l'écran on le retire de la liste
-	    else if(liste_ennemi[i].getPos_y()>800) liste_ennemi.erase(liste_ennemi.begin()+i); 
+	    if(liste_ennemi[i].getPos_y()>800) liste_ennemi.erase(liste_ennemi.begin()+i); 
 
 	    //On regarde si un ennemi ne tombe pas contre un obstacle car dans ce cas il se décale
-	    for(j=0; j < liste_obstacle.size();++j){
-	    	if(liste_ennemi[i].getPos_x()==liste_obstacle[j].getPos_x() &&
-	    	 (liste_ennemi[i].getSize_y()+liste_ennemi[i].getPos_y() > liste_obstacle[j].getPos_y() &&
-	    	 	liste_ennemi[i].getPos_y()<liste_obstacle[j].getPos_y())){
-
-	    		//S'il est tout à gauche il va à doire
-	    		if(liste_ennemi[i].getPos_x()==50) liste_ennemi[i].setPos(liste_ennemi[i].getPos_x()+150,liste_ennemi[i].getPos_y());
-	    		//S'il est au milieu il va à gauche ou à droite
-	    		else if(liste_ennemi[i].getPos_x()==200){  			
-	    			liste_ennemi[i].setPos(300*rand()%2+50,liste_ennemi[i].getPos_y());
-	    		}
-	    		//S'il est à gauche il va à droite
-	    		else if(liste_ennemi[i].getPos_x()==350) liste_ennemi[i].setPos(liste_ennemi[i].getPos_x()-150,liste_ennemi[i].getPos_y());
-	    	}
-	    }           
+	    for(auto& it:liste_obstacle)	liste_ennemi[i].Collision(it);
+        
 
 	    //On regarde si un missile touche pas l'ennemi sinon on supprime l'ennemi
 	    for(j=0; j < liste_missile.size();++j){
 	    	if(liste_ennemi[i].getPos_x()==liste_missile[j].getPos_x()-Perso.getSize_x()/4 &&
 	    	 (liste_ennemi[i].getSize_y()*1/2+liste_ennemi[i].getPos_y() > liste_missile[j].getPos_y() &&
-	    	 	liste_ennemi[i].getPos_y()<liste_missile[j].getPos_y())){
+	    	 	liste_ennemi[i].getPos_y()<liste_missile[j].getPos_y()))
+	    	{
 	    	 	liste_ennemi.erase(liste_ennemi.begin()+i);
 	    	 	liste_missile.erase(liste_missile.begin()+j);
 	    	 	mort_son.play();

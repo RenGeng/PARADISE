@@ -57,3 +57,20 @@ int Player::get_cpt_piece()
 {
 	return _cpt_piece;
 }
+
+void Player::game_over(sf::RenderWindow& window)
+{
+	Background game_over("Image/game_over.png",0,0);
+	sf::Event event1;
+	while(1)
+	{
+		window.clear();
+		game_over.Apparition(window);
+		while(window.pollEvent(event1))
+		{
+    	//Si on clique sur fermer
+    	if(event1.type == sf::Event::Closed) window.close();
+    	}
+    	window.display();
+	}
+}
