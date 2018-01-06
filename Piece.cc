@@ -7,3 +7,11 @@ int Piece::get_val_piece() const
 {
 	return _val_piece;
 }
+
+bool Piece::is_Collision(const Player& Perso) const
+{
+	if((getPos_x()==Perso.getPos_x() && 
+      ((getPos_y()+getSize_y()>=Perso.getPos_y()
+      && getPos_y()<=Perso.getPos_y()) || (getPos_y()<=Perso.getPos_y()+Perso.getSize_y() && 
+      getPos_y()+getSize_y()>=Perso.getPos_y()+Perso.getSize_y())))) return true;
+}

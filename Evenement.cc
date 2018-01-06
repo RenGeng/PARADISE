@@ -2,8 +2,47 @@
 
 Evenement::Evenement(){
 	_lastKey=-1;
+
+	//Chargement des sons
+	sf::Music* Menu_son = new sf::Music();
+	if (!Menu_son->openFromFile("Son/menu.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["Menu_son"] = Menu_son;
+	sf::Music* Music_fond=new sf::Music();
+	if (!Music_fond->openFromFile("Son/music_fond.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	Music_fond->setVolume(80.0);
+	_liste_son["Music_fond"] = Music_fond;
+	sf::Music* missile_son=new sf::Music();;
+	if (!missile_son->openFromFile("Son/missile.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	missile_son->setVolume(50.0);
+	_liste_son["missile_son"]=missile_son;
+	sf::Music* mort_son=new sf::Music();
+	if (!mort_son->openFromFile("Son/mort.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	mort_son->setVolume(50.0);
+	_liste_son["mort_son"]=mort_son;
+	sf::Music* R2D2_son=new sf::Music();
+	if (!R2D2_son->openFromFile("Son/R2D2.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["R2D2_son"]=R2D2_son;
+	sf::Music* C3po_son=new sf::Music();
+	if (!C3po_son->openFromFile("Son/C3po.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["C3po_son"]=C3po_son;
+	sf::Music* piece_son=new sf::Music();
+	if (!piece_son->openFromFile("Son/piece.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["piece_son"]=piece_son;
+	sf::Music* yoda_son=new sf::Music();
+	if (!yoda_son->openFromFile("Son/yoda.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["yoda_son"]=yoda_son;
 }
 
+
+Evenement::~Evenement()
+{
+	for(std::map<std::string,sf::Music*>::iterator it = _liste_son.begin(); it!=_liste_son.end();it++) delete it->second;
+}
+
+sf::Music* Evenement::get_son(std::string nom_son)
+{
+	return _liste_son[nom_son];
+}
 
 
 void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
@@ -23,8 +62,6 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 		}
 		_lastKey=0;
 	}
-	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) item->move(0,-5);
-	// else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) item->move(0,5);
 	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
 		item->setSaut(true);
 		 _lastKey=-1;
@@ -50,7 +87,7 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 	
 }
 
-void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu2,Background &Menu3,Background &Menu4,Background &Menu5,Background& Commande) const{
+void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu2,Background &Menu3,Background &Menu4,Background &Menu5,Background& Commande){
 	//Clock pour pas devenir épilepthique ...
 	int clock=0;
 	bool next=true;
@@ -66,7 +103,7 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 	liste_menu.push_back(Menu3);
 	liste_menu.push_back(Menu2);
 	sf::Event event1;
-
+	_liste_son["Menu_son"]->play();
 	while(1)
 	{
 		clock+=1;
@@ -97,9 +134,47 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 		window.display();
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && next==true) break;
 	}
+	_liste_son["Menu_son"]->stop();
 }
 
-void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso,sf::Music& piece_son)
+
+void Evenement::Init_var()
+{
+		// Initialisation des variables globales
+	VITESSE_SCROLLING = 3.0;
+
+	// gestion temps apparition aléatoire obstacle
+	borne_inf_obstacle = 0.05;
+	borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_obstacle;
+	DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
+
+	// gestion temps apparition aléatoire pièce
+	borne_inf_piece = 0.2;
+	borne_sup_piece = borne_sup_obstacle+0.2;
+	DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
+
+	// gestion temps apparition aléatoire r2d2
+	borne_inf_r2d2 = 0.05;
+	borne_sup_r2d2 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_r2d2;
+	DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
+
+	// gestion temps apparition missile
+	DELAIS_MISSILE = 0.5;
+	// Pour afficher le score
+	score=0;
+}
+
+void Evenement::Restart()
+{
+	Init_var();
+	liste_piece.clear();
+    liste_obstacle.clear();
+    liste_missile.clear();
+    liste_ennemi.clear();
+
+}
+
+void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso)
 {
     int i;
     //-----------Gestion des pieces-----------//
@@ -126,18 +201,15 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
         liste_piece[i].Scrolling();
         liste_piece[i].Apparition(window);
 
-        if((liste_piece[i].getPos_x()==Perso.getPos_x() && 
-           ((liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()
-            && liste_piece[i].getPos_y()<=Perso.getPos_y()) || (liste_piece[i].getPos_y()<=Perso.getPos_y()+Perso.getSize_y() && 
-            liste_piece[i].getPos_y()+liste_piece[i].getSize_y()>=Perso.getPos_y()+Perso.getSize_y()))))
+        if(liste_piece[i].is_Collision(Perso))
         {
         		Perso.inc_piece();
         		score+=liste_piece[i].get_val_piece();
             	liste_piece.erase(liste_piece.begin()+i);
-            	piece_son.play();
+            	_liste_son["piece_son"]->play();
         }
 
-        else if (liste_piece[i].getPos_y()>800) liste_piece.erase(liste_piece.begin()+i);                                  
+        if (liste_piece[i].getPos_y()>800) liste_piece.erase(liste_piece.begin()+i);                                  
     }
 }
 
@@ -183,18 +255,19 @@ void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle&
 
 
 
-void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf::RenderWindow& window,Player& Perso,sf::Music& missile_son)
+void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf::RenderWindow& window,Player& Perso)
 {
 	int i;
 	//-----------Gestion des obstacles-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
-	if(clock_missile.getElapsedTime().asSeconds()>DELAIS_MISSILE	&& sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+	if(clock_missile.getElapsedTime().asSeconds()>DELAIS_MISSILE && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
 		missile_rouge.setPos(Perso.getPos_x()+Perso.getSize_x()/4,Perso.getPos_y());
 		liste_missile.push_back(missile_rouge);
-		missile_son.play();
+		_liste_son["missile_son"]->play();
 
-	    //Réinitialisation du clock_ennemi
+	    //Réinitialisation du clock_missile
 	    clock_missile.restart();
 	}
 
@@ -209,22 +282,25 @@ void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf
 	}
 }
 
-void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po,sf::RenderWindow& window,Player& Perso,sf::Music& R2D2_son,sf::Music& C3po_son,sf::Music& mort_son)
+void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po,sf::RenderWindow& window,Player& Perso)
 {
 	int i,j;
 	//-----------Gestion des ennemis-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'ennemi à la liste 
-	if(clock_ennemi.getElapsedTime().asSeconds()>DELAIS_APPARITION_R2D2){
-		if(rand()%3==0){
+	if(clock_ennemi.getElapsedTime().asSeconds()>DELAIS_APPARITION_R2D2)
+	{
+		if(rand()%3==0)
+		{
 			C3po.Random_x();
 			liste_ennemi.push_back(C3po);
-			C3po_son.play();			
+			_liste_son["C3po_son"]->play();			
 		}
-		else{
+		else
+		{
 			R2d2.Random_x();
 			liste_ennemi.push_back(R2d2);
-			R2D2_son.play();			
+			_liste_son["R2D2_son"]->play();			
 		}
 
 	    //Réinitialisation du clock_ennemi
@@ -248,17 +324,14 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 	    //On regarde si un ennemi ne tombe pas contre un obstacle car dans ce cas il se décale
 	    for(auto& it:liste_obstacle)	liste_ennemi[i].Collision(it);
         
-
 	    //On regarde si un missile touche pas l'ennemi sinon on supprime l'ennemi
 	    for(j=0; j < liste_missile.size();++j){
-	    	if(liste_ennemi[i].getPos_x()==liste_missile[j].getPos_x()-Perso.getSize_x()/4 &&
-	    	 (liste_ennemi[i].getSize_y()*1/2+liste_ennemi[i].getPos_y() > liste_missile[j].getPos_y() &&
-	    	 	liste_ennemi[i].getPos_y()<liste_missile[j].getPos_y()))
+	    	if(liste_missile[j].is_Collision(liste_ennemi[i],Perso))
 	    	{
 	    	 	liste_ennemi.erase(liste_ennemi.begin()+i);
 	    	 	liste_missile.erase(liste_missile.begin()+j);
-	    	 	mort_son.play();
-	    	 	C3po_son.stop();
+	    	 	_liste_son["mort_son"]->play();
+	    	 	_liste_son["C3po_son"]->stop();
 	    	 }
 	    }              
 	}

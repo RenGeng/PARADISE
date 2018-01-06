@@ -5,6 +5,7 @@ class Piece:public Objet
 {
 public:
 	Piece(std::string chemins, int vitesse_scrolling);
+	bool is_Collision(const Player&) const;
 	int get_val_piece() const;
 
 private:

@@ -1,5 +1,7 @@
 #include "Background.hh"
 
+Background::Background(std::string chemins):Decor(chemins){};
+
 Background::Background(std::string chemins,int vitesse_scrolling,int pos_y):Decor(chemins,vitesse_scrolling){
 	_image.setPosition(0,pos_y);
 }

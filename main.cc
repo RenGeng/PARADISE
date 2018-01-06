@@ -20,9 +20,6 @@ float DELAIS_APPARITION_R2D2;
 // gestion temps apparition aléatoire missile
 float DELAIS_MISSILE;
 
-
-bool yoda_play=false; //pour ne repeter le son qu'une fois
-
 vector<Piece> liste_piece;
 vector<Obstacle> liste_obstacle;
 vector<Missile> liste_missile;
@@ -35,50 +32,13 @@ int main()
 {
 
 	srand(time(0));
-	// Initialisation des variables globales
-	VITESSE_SCROLLING = 3.0;
 
-	// gestion temps apparition aléatoire obstacle
-	borne_inf_obstacle = 0.05;
-	borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_obstacle;
-	DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
+    // Classe qui va gérer tout au niveau de la fenetre
+    Evenement event;
+    event.Init_var();
 
-	// gestion temps apparition aléatoire pièce
-	borne_inf_piece = 0.2;
-	borne_sup_piece = borne_sup_obstacle+0.2;
-	DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
-
-	// gestion temps apparition aléatoire r2d2
-	borne_inf_r2d2 = 0.05;
-	borne_sup_r2d2 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_r2d2;
-	DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
-
-	// gestion temps apparition missile
-	DELAIS_MISSILE = 0.5;
-	// Pour afficher le score
-	score=0;
-
-	//Chargement des sons
-	sf::Music Menu_son;
-	if (!Menu_son.openFromFile("Son/menu.wav")) return -1; // erreur
-	sf::Music Music_fond;
-	if (!Music_fond.openFromFile("Son/music_fond.wav")) return -1; // erreur
-	Music_fond.setVolume(80.0);
-	sf::Music missile_son;
-	if (!missile_son.openFromFile("Son/missile.wav")) return -1; // erreur
-	missile_son.setVolume(50.0);
-	sf::Music mort_son;
-	if (!mort_son.openFromFile("Son/mort.wav")) return -1; // erreur
-	mort_son.setVolume(50.0);
-	sf::Music R2D2_son;
-	if (!R2D2_son.openFromFile("Son/R2D2.wav")) return -1; // erreur
-	sf::Music C3po_son;
-	if (!C3po_son.openFromFile("Son/C3po.wav")) return -1; // erreur
-	sf::Music piece_son;
-	if (!piece_son.openFromFile("Son/piece.wav")) return -1; // erreur
-	sf::Music yoda_son;
-	if (!yoda_son.openFromFile("Son/yoda.wav")) return -1; // erreur
-
+    bool yoda_play=false; //pour répéter le son du yoda qu'une fois
+    
     int i;
 
     //CHARGEMENT DU TEXT A AFFICHER
@@ -110,13 +70,10 @@ int main()
     Background Menu3("Image/background_menu3.png",0,0);
     Background Menu4("Image/background_menu4.png",0,0);
     Background Menu5("Image/background_menu5.png",0,0);
-    Background Commande("Image/commande.png",0,0);
-    Background Game_over("Image/game_over.png",0,0);
+    Background Commande("Image/commande.png");
+    Background Game_over("Image/game_over.png");
 
-    Evenement event;
-    Menu_son.play();
     event.Menu(window,Menu1,Menu2,Menu3,Menu4,Menu5,Commande);
-    Menu_son.stop();
 
     // Conteneur pour la gestion de la vitesse
     vector<Decor*> liste_vitesse_scrolling;
@@ -159,8 +116,9 @@ int main()
     while(window.isOpen())
     {       
     	//Si la music de fond est arrété on recommence
-    	if(Music_fond.getStatus()==0) Music_fond.play();
-        if(Perso.get_Game_over()==false){        	
+    	if(event.get_son("Music_fond")->getStatus()==0) event.get_son("Music_fond")->play();
+        if(!Perso.get_Game_over())
+        {        	
             event.ActionPlayer(window,&Perso);
             window.clear();
             Fond1.Apparition(window);
@@ -172,9 +130,9 @@ int main()
 
             // gestion des objets 
             event.gestion_objet(clock_obstacle,Trou,Vaisseau_ecrase,window,Perso);
-            event.gestion_objet(clock_ennemi,R2d2,C3po,window,Perso,R2D2_son,C3po_son,mort_son);
-            event.gestion_objet(clock_missile,missile_rouge,window,Perso,missile_son);
-            event.gestion_objet(clock_piece,piece,window,Perso,piece_son);
+            event.gestion_objet(clock_ennemi,R2d2,C3po,window,Perso);
+            event.gestion_objet(clock_missile,missile_rouge,window,Perso);
+            event.gestion_objet(clock_piece,piece,window,Perso);
             
 
             // affichage du score
@@ -192,53 +150,28 @@ int main()
             Perso.Apparition(window);            
         }
 
-        else{
-        	Music_fond.stop();
-        	if(yoda_son.getStatus()==0 && yoda_play==false){
-        		yoda_son.play();        	
+        else
+        {
+        	event.get_son("Music_fond")->stop();
+        	if(event.get_son("yoda_son")->getStatus()==0 && yoda_play==false){
+        		event.get_son("yoda_son")->play();        	
         		yoda_play=true;
         	}
-            Game_over.Apparition(window);              
-        }
+            Game_over.Apparition(window);
+                    //Réinitialisation
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+            {
+                event.Restart();
+                Perso.set_Game_over(false);
+                Perso.set_cpt_piece(0);
 
-        //Réinitialisation
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
-        	Perso.set_Game_over(false);
-        	yoda_play=false;
-        	// Initialisation des variables globales
-			VITESSE_SCROLLING = 3.0;
-
-			// gestion temps apparition aléatoire obstacle
-			borne_inf_obstacle = 0.05;
-			borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_obstacle;
-			DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
-
-			// gestion temps apparition aléatoire pièce
-			borne_inf_piece = 0.2;
-			borne_sup_piece = borne_sup_obstacle+0.2;
-			DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
-
-			// gestion temps apparition aléatoire r2d2
-			borne_inf_r2d2 = 0.05;
-			borne_sup_r2d2 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_r2d2;
-			DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
-
-			// gestion temps apparition missile
-			DELAIS_MISSILE = 0.5;
-			// Pour afficher le score
-			score=0;
-			liste_piece.clear();
-			liste_obstacle.clear();
-			liste_missile.clear();
-			liste_ennemi.clear();
-			Perso.set_cpt_piece(0);
-
+            }      
         }
        
-        sf::Event event;
-        while(window.pollEvent(event)){
+        sf::Event ev;
+        while(window.pollEvent(ev)){
             //Si on clique sur fermer
-            if(event.type == sf::Event::Closed) window.close();
+            if(ev.type == sf::Event::Closed) window.close();
         }
         window.display();
     }

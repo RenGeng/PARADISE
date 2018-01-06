@@ -30,10 +30,6 @@ extern float DELAIS_MISSILE;
 // le score
 extern unsigned long long score;
 
-
-// à effacer plus tard
-extern bool stop;
-
 extern std::vector<Piece> liste_piece;
 extern std::vector<Missile> liste_missile;
 extern std::vector<Obstacle> liste_obstacle;
