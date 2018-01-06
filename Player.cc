@@ -2,7 +2,7 @@
 #define VITESSE_COURSE 5 //Gère la vitesse de changement car les sleeps c'est galere
 int vitesse_course=0;
 
-Player::Player(std::string chemins,int cptcadre):Decor(chemins),_cptcadre(cptcadre),_pos(1),_saut(false),_cpt_saut(0),_cpt_piece(0){
+Player::Player(std::string chemins,int cptcadre):Decor(chemins),_cptcadre(cptcadre),_pos(1),_saut(false),_cpt_saut(0),_cpt_piece(0),_etat_game_over(false){
 	_image.setPosition(200,500);
 }
 
@@ -58,19 +58,30 @@ int Player::get_cpt_piece()
 	return _cpt_piece;
 }
 
-void Player::game_over(sf::RenderWindow& window)
+void Player::set_cpt_piece(int val)
 {
-	Background game_over("Image/game_over.png",0,0);
-	sf::Event event1;
-	while(1)
-	{
-		window.clear();
-		game_over.Apparition(window);
-		while(window.pollEvent(event1))
-		{
-    	//Si on clique sur fermer
-    	if(event1.type == sf::Event::Closed) window.close();
-    	}
-    	window.display();
-	}
+	_cpt_piece=val;;
+}
+
+void Player::set_Game_over(bool etat)
+{
+	_etat_game_over=etat;
+}
+	// Background game_over("Image/game_over.png",0,0);
+	// sf::Event event1;
+	// while(1)
+	// {
+	// 	window.clear();
+	// 	game_over.Apparition(window);
+	// 	while(window.pollEvent(event1))
+	// 	{
+ //    	//Si on clique sur fermer
+ //    	if(event1.type == sf::Event::Closed) window.close();
+ //    	}
+ //    	window.display();
+	// }
+
+
+bool Player::get_Game_over(){
+	return _etat_game_over;
 }

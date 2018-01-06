@@ -11,7 +11,7 @@ void Ennemi::Collision(Player& Perso,sf::RenderWindow& window)
 {
 	if(getPos_x()==Perso.getPos_x() && 
 	    (getPos_y()+getSize_y()>=Perso.getPos_y()+Perso.getSize_y()
-	    && getPos_y()<=Perso.getPos_y()+Perso.getSize_y())) Perso.game_over(window);
+	    && getPos_y()<=Perso.getPos_y()+Perso.getSize_y())) Perso.set_Game_over(true);
 }
 
 void Ennemi::Collision(Obstacle& obstacle)

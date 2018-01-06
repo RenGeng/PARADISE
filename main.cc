@@ -20,8 +20,8 @@ float DELAIS_APPARITION_R2D2;
 // gestion temps apparition aléatoire missile
 float DELAIS_MISSILE;
 
-// à effacer plus tard
-bool stop;
+
+bool yoda_play=false; //pour ne repeter le son qu'une fois
 
 vector<Piece> liste_piece;
 vector<Obstacle> liste_obstacle;
@@ -76,6 +76,8 @@ int main()
 	if (!C3po_son.openFromFile("Son/C3po.wav")) return -1; // erreur
 	sf::Music piece_son;
 	if (!piece_son.openFromFile("Son/piece.wav")) return -1; // erreur
+	sf::Music yoda_son;
+	if (!yoda_son.openFromFile("Son/yoda.wav")) return -1; // erreur
 
     int i;
 
@@ -86,13 +88,13 @@ int main()
     text_score.setFont(font);
     text_score.setCharacterSize(30);
     text_score.setStyle(sf::Text::Bold);
-    text_score.setColor(sf::Color::Red);
+    text_score.setColor(sf::Color::Black);
     text_score.setPosition(5,0);
     sf::Text text_piece;
     text_piece.setFont(font);
     text_piece.setCharacterSize(30);
     text_piece.setStyle(sf::Text::Bold);
-    text_piece.setColor(sf::Color::Red);
+    text_piece.setColor(sf::Color::Black);
     text_piece.setPosition(60,45);
 
     //Création fenêtre 
@@ -109,6 +111,7 @@ int main()
     Background Menu4("Image/background_menu4.png",0,0);
     Background Menu5("Image/background_menu5.png",0,0);
     Background Commande("Image/commande.png",0,0);
+    Background Game_over("Image/game_over.png",0,0);
 
     Evenement event;
     Menu_son.play();
@@ -157,7 +160,7 @@ int main()
     {       
     	//Si la music de fond est arrété on recommence
     	if(Music_fond.getStatus()==0) Music_fond.play();
-        if(stop==false){        	
+        if(Perso.get_Game_over()==false){        	
             event.ActionPlayer(window,&Perso);
             window.clear();
             Fond1.Apparition(window);
@@ -186,13 +189,51 @@ int main()
             window.draw(text_piece);
 
             Perso.changement_cadre();
-            Perso.Apparition(window);
-        }
-        else if(stop==true){
-            cout<<"Entrer pour continuer"<<endl;              
+            Perso.Apparition(window);            
         }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) stop=false;
+        else{
+        	Music_fond.stop();
+        	if(yoda_son.getStatus()==0 && yoda_play==false){
+        		yoda_son.play();        	
+        		yoda_play=true;
+        	}
+            Game_over.Apparition(window);              
+        }
+
+        //Réinitialisation
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
+        	Perso.set_Game_over(false);
+        	yoda_play=false;
+        	// Initialisation des variables globales
+			VITESSE_SCROLLING = 3.0;
+
+			// gestion temps apparition aléatoire obstacle
+			borne_inf_obstacle = 0.05;
+			borne_sup_obstacle = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_obstacle;
+			DELAIS_APPARITION_OBSTACLE = (borne_inf_obstacle + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_obstacle-borne_inf_obstacle))))*10;
+
+			// gestion temps apparition aléatoire pièce
+			borne_inf_piece = 0.2;
+			borne_sup_piece = borne_sup_obstacle+0.2;
+			DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
+
+			// gestion temps apparition aléatoire r2d2
+			borne_inf_r2d2 = 0.05;
+			borne_sup_r2d2 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_r2d2;
+			DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
+
+			// gestion temps apparition missile
+			DELAIS_MISSILE = 0.5;
+			// Pour afficher le score
+			score=0;
+			liste_piece.clear();
+			liste_obstacle.clear();
+			liste_missile.clear();
+			liste_ennemi.clear();
+			Perso.set_cpt_piece(0);
+
+        }
        
         sf::Event event;
         while(window.pollEvent(event)){

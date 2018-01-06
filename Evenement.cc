@@ -53,6 +53,7 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu2,Background &Menu3,Background &Menu4,Background &Menu5,Background& Commande) const{
 	//Clock pour pas devenir épilepthique ...
 	int clock=0;
+	bool next=true;
 	//Définition des vectors menu pour le parcourir à chaque tour
 	int selection_menu=0;
 	std::vector<Background> liste_menu;
@@ -77,7 +78,10 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 			clock=0;
 		}
 		window.display();
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) break;
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
+			next=false;
+			break;
+		}
 		
     	while(window.pollEvent(event1)){
     		//Si on clique sur fermer
@@ -87,10 +91,11 @@ void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu
 
 	while(1)
 	{
+		if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) next=true;
 		window.clear();
 		Commande.Apparition(window);
 		window.display();
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) break;
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && next==true) break;
 	}
 }
 
