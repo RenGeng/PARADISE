@@ -5,7 +5,7 @@
 #include "Ennemi.hh"
 #include <vector>
 
- // Taille de la fenêtre : 800x480 pixels
+ // Taille de la fenêtre : 480*800 pixels
 const int SCREEN_WIDTH = 480;
 const int SCREEN_HEIGHT = 800;
 

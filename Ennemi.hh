@@ -8,6 +8,10 @@ class Ennemi:public Objet
 public:
 	Ennemi(std::string chemins, int vitesse_scrolling);
 	void Avance();
-	void Collision(Player&,sf::RenderWindow&);
+	bool operator<=(const Player&) const;
+	bool operator>=(const Player&) const;
+	bool operator==(const Player&) const;
+	bool operator==(const Obstacle&) const;
+	void Collision(Player&);
 	void Collision(Obstacle&);
 };

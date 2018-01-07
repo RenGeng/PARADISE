@@ -6,6 +6,7 @@ Evenement::Evenement(){
 	//Chargement des sons
 	sf::Music* Menu_son = new sf::Music();
 	if (!Menu_son->openFromFile("Son/menu.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	Menu_son->setLoop(true);
 	_liste_son["Menu_son"] = Menu_son;
 	sf::Music* Music_fond=new sf::Music();
 	if (!Music_fond->openFromFile("Son/music_fond.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
@@ -201,7 +202,7 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
         liste_piece[i].Scrolling();
         liste_piece[i].Apparition(window);
 
-        if(liste_piece[i].is_Collision(Perso))
+        if(liste_piece[i]==Perso)
         {
         		Perso.inc_piece();
         		score+=liste_piece[i].get_val_piece();
@@ -246,7 +247,7 @@ void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle&
 	   liste_obstacle[i].Apparition(window);
 
 	    //Gestion collision si on touche l'objet on arrete
-	   	liste_obstacle[i].Collision(Perso,window);
+	   	liste_obstacle[i].Collision(Perso);
 	    //S'il sort de l'écran on le retire de la liste
 	    if(liste_obstacle[i].getPos_y()>800) liste_obstacle.erase(liste_obstacle.begin()+i);                           
 	}
@@ -316,7 +317,7 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 	   liste_ennemi[i].Apparition(window);
 
 	    //Gestion collision si on touche l'objet on arrete et on ne peut pas sauter par dessus un ennemi !
-	   liste_ennemi[i].Collision(Perso,window);
+	   liste_ennemi[i].Collision(Perso);
 
 	    //S'il sort de l'écran on le retire de la liste
 	    if(liste_ennemi[i].getPos_y()>800) liste_ennemi.erase(liste_ennemi.begin()+i); 

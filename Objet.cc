@@ -4,8 +4,6 @@
 Objet::Objet(std::string chemins,int vitesse_scrolling):Decor(chemins,vitesse_scrolling){
 }
 
-Objet::~Objet(){}
-
 void Objet::Apparition(sf::RenderWindow& window){
 	window.draw(_image);
 }

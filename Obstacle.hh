@@ -7,5 +7,8 @@ class Obstacle:public Objet
 {
 public:
 	Obstacle(std::string chemins, int vitesse_scrolling);
-	void Collision(Player&,sf::RenderWindow&);
+	bool operator<=(const Player&) const;
+	bool operator>=(const Player&) const;
+	bool operator==(const Player&) const;
+	void Collision(Player&);
 };

@@ -48,14 +48,12 @@ int main()
     text_score.setFont(font);
     text_score.setCharacterSize(30);
     text_score.setStyle(sf::Text::Bold);
-    text_score.setColor(sf::Color::Black);
-    text_score.setPosition(5,0);
+    
     sf::Text text_piece;
     text_piece.setFont(font);
     text_piece.setCharacterSize(30);
     text_piece.setStyle(sf::Text::Bold);
     text_piece.setColor(sf::Color::Black);
-    text_piece.setPosition(60,45);
 
     //Création fenêtre 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT),"Paperise Run");
@@ -136,6 +134,8 @@ int main()
             
 
             // affichage du score
+            text_score.setColor(sf::Color::Black);
+            text_score.setPosition(5,0);
             text_score.setString("Score: "+to_string(score));
             window.draw(text_score);
             score++;
@@ -143,6 +143,7 @@ int main()
             // affichage du nombre de pièce ramassé
             piece.setPos(5,45);
             piece.Apparition(window);
+            text_piece.setPosition(60,45);
             text_piece.setString(to_string(Perso.get_cpt_piece()));
             window.draw(text_piece);
 
@@ -152,6 +153,7 @@ int main()
 
         else
         {
+
         	event.get_son("Music_fond")->stop();
         	if(event.get_son("yoda_son")->getStatus()==0 && yoda_play==false){
         		event.get_son("yoda_son")->play();        	
@@ -165,7 +167,12 @@ int main()
                 Perso.set_Game_over(false);
                 Perso.set_cpt_piece(0);
 
-            }      
+            }
+            text_score.setColor(sf::Color::White);
+            text_score.setPosition(120,25);
+            text_score.setString("Votre score: "+to_string(score));
+            window.draw(text_score);
+
         }
        
         sf::Event ev;

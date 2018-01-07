@@ -10,8 +10,10 @@ class Objet: public Decor
 {
 	public:	
 		Objet(std::string chemins,int vitesse_scrolling);
-		virtual ~Objet() = 0;
 		void Apparition(sf::RenderWindow& window);
 		void Scrolling();
 		void Random_x();
+		virtual bool operator<=(const Player&) const = 0;
+		virtual bool operator>=(const Player&) const = 0;
+		virtual bool operator==(const Player&) const = 0;
 };

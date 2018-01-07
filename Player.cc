@@ -24,7 +24,7 @@ void Player::changement_cadre(){
 	}
 }
 
-int Player::getPos(){
+int Player::getPos() const{
 	return _pos;
 }
 
@@ -32,7 +32,7 @@ void Player::setPos(int new_pos){
 	_pos=new_pos;
 }
 
-bool Player::getSaut(){
+bool Player::getSaut() const{
 	return _saut;
 }
 
@@ -40,7 +40,7 @@ void Player::setSaut(bool etat){
 	_saut=etat;
 }
 
-int Player::get_cpt_saut(){
+int Player::get_cpt_saut() const{
 	return _cpt_saut;
 }
 
@@ -53,7 +53,7 @@ void Player::inc_piece()
 	_cpt_piece++;
 }
 
-int Player::get_cpt_piece()
+int Player::get_cpt_piece() const
 {
 	return _cpt_piece;
 }
@@ -67,21 +67,8 @@ void Player::set_Game_over(bool etat)
 {
 	_etat_game_over=etat;
 }
-	// Background game_over("Image/game_over.png",0,0);
-	// sf::Event event1;
-	// while(1)
-	// {
-	// 	window.clear();
-	// 	game_over.Apparition(window);
-	// 	while(window.pollEvent(event1))
-	// 	{
- //    	//Si on clique sur fermer
- //    	if(event1.type == sf::Event::Closed) window.close();
- //    	}
- //    	window.display();
-	// }
 
-
-bool Player::get_Game_over(){
+bool Player::get_Game_over() const
+{
 	return _etat_game_over;
 }
