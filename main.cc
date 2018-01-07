@@ -138,7 +138,7 @@ int main()
             // affichage du score
             text_score.setColor(sf::Color::Black);
             text_score.setPosition(5,0);
-            text_score.setString("Score: "+to_string(score));
+            text_score.setString("Distance: "+to_string(score)+"m");
             window.draw(text_score);
             score++;
 
@@ -157,6 +157,7 @@ int main()
         {
 
         	event.get_son("Music_fond")->stop();
+        	event.get_son("C3po_son")->stop();
         	if(event.get_son("yoda_son")->getStatus()==0 && yoda_play==false){
         		event.get_son("yoda_son")->play();        	
         		yoda_play=true;

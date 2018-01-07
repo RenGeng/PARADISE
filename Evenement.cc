@@ -10,7 +10,7 @@ Evenement::Evenement(){
 	_liste_son["Menu_son"] = Menu_son;
 	sf::Music* Music_fond=new sf::Music();
 	if (!Music_fond->openFromFile("Son/music_fond.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
-	Music_fond->setVolume(80.0);
+	Music_fond->setVolume(50.0);
 	_liste_son["Music_fond"] = Music_fond;
 	sf::Music* missile_son=new sf::Music();;
 	if (!missile_son->openFromFile("Son/missile.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
@@ -357,10 +357,10 @@ void Evenement::gestion_difficulte()
 {
 	if(score%250==0)
 	{
-		if(borne_inf_obstacle>0.01)	borne_inf_obstacle-=0.01;
+		if(borne_inf_obstacle>0.05)	borne_inf_obstacle-=0.01;
 		if(borne_sup_obstacle>borne_inf_obstacle+0.05)	borne_sup_obstacle-=0.05;
 
-		if(borne_inf_r2d2>0.04) borne_inf_r2d2-=0.01;
+		if(borne_inf_r2d2>0.05) borne_inf_r2d2-=0.01;
 		if(borne_sup_r2d2>borne_inf_r2d2+0.07) borne_sup_r2d2-=0.02;
 
 	}
