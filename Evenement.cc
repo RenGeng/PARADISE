@@ -48,7 +48,7 @@ sf::Music* Evenement::get_son(std::string nom_son)
 
 void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 	int i;
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && item->getSaut()==false){
 		//Si on est pas tout à droite et que le dernier bouton pressé n'est pas droite
 		if(item->getPos()!=2 && _lastKey!=1){
 			item->move(150,0);
@@ -56,7 +56,7 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 		}
 		_lastKey=1;
 	}
-	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){	
+	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && item->getSaut()==false){	
 		if(item->getPos()!=0 && _lastKey!=0){
 			item->move(-150,0);
 			item->setPos(item->getPos()-1);
@@ -172,6 +172,7 @@ void Evenement::Restart()
     liste_obstacle.clear();
     liste_missile.clear();
     liste_ennemi.clear();
+    yoda_play=false;
 
 }
 

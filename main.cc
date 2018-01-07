@@ -25,6 +25,8 @@ vector<Obstacle> liste_obstacle;
 vector<Missile> liste_missile;
 vector<Ennemi> liste_ennemi;
 
+bool yoda_play; //Savoir si on a deja joué le son de yoda
+
 // Pour afficher le score
 unsigned long long score;
 
@@ -37,7 +39,7 @@ int main()
     Evenement event;
     event.Init_var();
 
-    bool yoda_play=false; //pour répéter le son du yoda qu'une fois
+    yoda_play=false;
     
     int i;
 

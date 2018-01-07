@@ -34,3 +34,5 @@ extern std::vector<Piece> liste_piece;
 extern std::vector<Missile> liste_missile;
 extern std::vector<Obstacle> liste_obstacle;
 extern std::vector<Ennemi> liste_ennemi;
+
+extern bool yoda_play; //Savoir si on a deja joué le son de yoda
