@@ -206,7 +206,6 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
         if(liste_piece[i]==Perso)
         {
         		Perso.inc_piece();
-        		score+=liste_piece[i].get_val_piece();
             	liste_piece.erase(liste_piece.begin()+i);
             	_liste_son["piece_son"]->play();
         }
@@ -364,5 +363,4 @@ void Evenement::gestion_difficulte()
 		if(borne_sup_r2d2>borne_inf_r2d2+0.07) borne_sup_r2d2-=0.02;
 
 	}
-	
 }

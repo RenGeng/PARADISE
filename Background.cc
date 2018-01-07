@@ -11,7 +11,8 @@ void Background::Apparition(sf::RenderWindow& window){
 	window.draw(_image);
 }
 
-void Background::Scrolling(Background* Fond2){
+void Background::Scrolling(Background* Fond2)
+{
 	//Fonction scrolling infinie 
 	//On gère les deux même décors A et B qui se suivent
 
