@@ -172,7 +172,7 @@ int main()
             }
             text_score.setColor(sf::Color::White);
             text_score.setPosition(120,25);
-            text_score.setString("Votre score: "+to_string(score));
+            text_score.setString("Votre score: "+to_string(score*Perso.get_cpt_piece()));
             window.draw(text_score);
 
         }
