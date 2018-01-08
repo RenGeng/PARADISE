@@ -16,7 +16,8 @@ public:
 	~Evenement();
 	sf::Music* get_son(std::string);
 	void ActionPlayer(sf::RenderWindow &window,Player* item);
-	void Menu(sf::RenderWindow &window,Background& Menu1,Background& Menu2,Background& Menu3,Background& Menu4,Background& Menu5,Background& Commande);
+	void Menu(sf::RenderWindow &window,std::vector<Background>& liste_menu,std::vector<Background>& liste_commande);
+	std::vector<Background> liste_scintillement(std::vector<Background>& liste_menu);
 	void Init_var();
 	void Restart();
 

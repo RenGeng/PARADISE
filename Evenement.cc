@@ -88,56 +88,64 @@ void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 	
 }
 
-void Evenement::Menu(sf::RenderWindow &window,Background &Menu1,Background &Menu2,Background &Menu3,Background &Menu4,Background &Menu5,Background& Commande){
+void Evenement::Menu(sf::RenderWindow &window,std::vector<Background>& liste_menu,std::vector<Background>& liste_commande){
 	//Clock pour pas devenir épilepthique ...
 	int clock=0;
-	bool next=true;
+	bool menu=true,commande=false;
 	//Définition des vectors menu pour le parcourir à chaque tour
 	int selection_menu=0;
-	std::vector<Background> liste_menu;
-	liste_menu.push_back(Menu1);
-	liste_menu.push_back(Menu2);
-	liste_menu.push_back(Menu3);
-	liste_menu.push_back(Menu4);
-	liste_menu.push_back(Menu5);
-	liste_menu.push_back(Menu4);
-	liste_menu.push_back(Menu3);
-	liste_menu.push_back(Menu2);
+	std::vector<Background> liste_decor=this->liste_scintillement(liste_menu);
 	sf::Event event1;
 	_liste_son["Menu_son"]->play();
 	while(1)
-	{
+	{		
+		//Gestion du scintillement
 		clock+=1;
 		window.clear();
-		liste_menu[selection_menu].Apparition(window);
+		liste_decor[selection_menu].Apparition(window);
 		if(clock==7){			
 			selection_menu+=1;
 			if(selection_menu==8) selection_menu=0;
 			clock=0;
 		}
 		window.display();
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
-			next=false;
-			break;
+
+		//Si on appuye sur Entrée on change de decor et on bloque le boolean commande pour pas directement sortir sinon on ne voit pas le décor
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && menu==true){
+			liste_decor.clear();
+			liste_decor=this->liste_scintillement(liste_commande);
+			clock=0;
+			selection_menu=0;
+			commande=true;
+			menu=false;
 		}
+
+		//On débloque le boolean commande si on a appuyé sur rien
+		else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) commande=false;
+
+		//On sort si les deux sont en false
+		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && menu==false && commande==false) break;
 		
     	while(window.pollEvent(event1)){
     		//Si on clique sur fermer
     		if(event1.type == sf::Event::Closed) window.close();
     	}
 	}
-
-	while(1)
-	{
-		if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) next=true;
-		window.clear();
-		Commande.Apparition(window);
-		window.display();
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && next==true) break;
-	}
 	_liste_son["Menu_son"]->stop();
 }
 
+std::vector<Background> Evenement::liste_scintillement(std::vector<Background>& liste_menu){
+	std::vector<Background> liste_decor;
+	liste_decor.push_back(liste_menu[0]);
+	liste_decor.push_back(liste_menu[1]);
+	liste_decor.push_back(liste_menu[2]);
+	liste_decor.push_back(liste_menu[3]);
+	liste_decor.push_back(liste_menu[4]);
+	liste_decor.push_back(liste_menu[3]);
+	liste_decor.push_back(liste_menu[2]);
+	liste_decor.push_back(liste_menu[1]);
+	return liste_decor;
+}
 
 void Evenement::Init_var()
 {

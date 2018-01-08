@@ -64,16 +64,33 @@ int main()
     window.setFramerateLimit(60);
 
 
-    //Background
+    //Background Menu
     Background Menu1("Image/background_menu1.png",0,0);
     Background Menu2("Image/background_menu2.png",0,0);
     Background Menu3("Image/background_menu3.png",0,0);
     Background Menu4("Image/background_menu4.png",0,0);
     Background Menu5("Image/background_menu5.png",0,0);
-    Background Commande("Image/commande.png");
+    std::vector<Background> liste_menu;
+    liste_menu.push_back(Menu1);
+    liste_menu.push_back(Menu2);
+    liste_menu.push_back(Menu3);
+    liste_menu.push_back(Menu4);
+    liste_menu.push_back(Menu5);
+    //Background commande
+    Background Commande1("Image/commande1.png",0,0);
+    Background Commande2("Image/commande2.png",0,0);
+    Background Commande3("Image/commande3.png",0,0);
+    Background Commande4("Image/commande4.png",0,0);
+    Background Commande5("Image/commande5.png",0,0);
+    std::vector<Background> liste_commande;
+    liste_commande.push_back(Commande1);
+    liste_commande.push_back(Commande2);
+    liste_commande.push_back(Commande3);
+    liste_commande.push_back(Commande4);
+    liste_commande.push_back(Commande5);
     Background Game_over("Image/game_over.png");
 
-    event.Menu(window,Menu1,Menu2,Menu3,Menu4,Menu5,Commande);
+    event.Menu(window,liste_menu,liste_commande);
 
     // Conteneur pour la gestion de la vitesse
     vector<Decor*> liste_vitesse_scrolling;
