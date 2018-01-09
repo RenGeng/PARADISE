@@ -8,6 +8,7 @@ class Decor
 public:
 	Decor(std::string chemins);
 	Decor(std::string chemins,int vitesse_scrolling);
+	void Modifier(std::string chemins);
 	virtual void Apparition(sf::RenderWindow& window)=0; // Pour faire apparaitre sur la fenetre
 	void setDimension(double coeffLargeur, double coeffHauteur); // Pour redimensionner l'image
 	void move(int x, int y);

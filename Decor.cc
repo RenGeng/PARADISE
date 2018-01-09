@@ -34,6 +34,18 @@ Decor::Decor(string chemins,int vitesse_scrolling)
 	_vitesse_scrolling=vitesse_scrolling;
 }
 
+void Decor::Modifier(string chemins){
+	if (!_texture.loadFromFile(chemins))
+	{
+		// Erreur
+		cout << "Erreur durant le chargement de l'image." << endl;
+	}
+	else
+	{
+		_texture.setSmooth(true);
+		_image.setTexture(_texture);
+	}
+}
 
 void Decor::setDimension(double coeffLargeur, double coeffHauteur)
 {

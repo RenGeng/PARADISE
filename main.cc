@@ -39,7 +39,8 @@ int main()
     Evenement event;
     event.Init_var();
 
-    yoda_play=false;
+    yoda_play=false; //Permet de rejouer le son de yoda
+    bool modifier_fond_vaisseau=true; //Permet de changer le fond qu'une seule fois
     
     int i;
 
@@ -107,6 +108,9 @@ int main()
     liste_vitesse_scrolling.push_back(&Trou);
     Obstacle Vaisseau_ecrase("Image/vaisseau_ecrase.png",VITESSE_SCROLLING);
     liste_vitesse_scrolling.push_back(&Vaisseau_ecrase);
+    Obstacle Vaisseau_fuite("Image/vaisseau_fuite.png",VITESSE_SCROLLING);
+    liste_vitesse_scrolling.push_back(&Vaisseau_fuite);
+    Vaisseau_fuite.setPos((SCREEN_WIDTH/2)-Vaisseau_fuite.getSize_x()/2,-Vaisseau_fuite.getSize_y());
 
     //Piece
     Piece piece("Image/Bitcoin.png",VITESSE_SCROLLING);
@@ -134,6 +138,8 @@ int main()
     {       
     	//Si la music de fond est arrété on recommence
     	if(event.get_son("Music_fond")->getStatus()==0) event.get_son("Music_fond")->play();
+
+    	
         if(!Perso.get_Game_over())
         {        	
             event.ActionPlayer(window,&Perso);
@@ -141,6 +147,21 @@ int main()
             Fond1.Apparition(window);
             Fond2.Apparition(window);
             Fond1.Scrolling(&Fond2);
+            //Si on arrive à un certain score on change de fond
+	    	if(score>300 && modifier_fond_vaisseau==true){
+	    		liste_piece.clear();
+				liste_obstacle.clear();
+				liste_missile.clear();
+				liste_ennemi.clear();
+	    		Vaisseau_fuite.Scrolling();
+	    		Vaisseau_fuite.Apparition(window);
+	    		if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()==200){
+	    			modifier_fond_vaisseau=false;
+	    			Fond1.Modifier("Image/background_vaisseau1.png");
+	    			Fond2.Modifier("Image/background_vaisseau2.png");
+	    		}
+	    		else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true);
+	    	}
 
             event.gestion_vitesse(liste_vitesse_scrolling);
             event.gestion_difficulte();
