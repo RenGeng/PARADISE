@@ -186,7 +186,8 @@ void Evenement::Restart()
 
 void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso)
 {
-    int i;
+    size_t i;
+    int j;
     //-----------Gestion des pieces-----------//
     if(clock_piece.getElapsedTime().asSeconds()>DELAIS_APPARITION_PIECE)
     {
@@ -194,10 +195,10 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
         piece.Random_x();
 
         //Affectation aléatoire du nombre de piece entre 3 et 6
-        for(i=0;i<rand()%5+3;i++)
+        for(j=0;j<rand()%5+3;j++)
         {
             //On modifie la coordonnée y de chaque piece pour les avoir les unes à la suite des autres
-            piece.setPos(piece.getPos_x(),-50*i);
+            piece.setPos(piece.getPos_x(),-50*j);
             liste_piece.push_back(piece);           
 
             //réinitialisation du clock_pièce
@@ -225,7 +226,7 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
 
 void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle& Vaisseau_ecrase,sf::RenderWindow& window,Player& Perso)
 {
-	int i;
+	size_t i;
 	//-----------Gestion des obstacles-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
@@ -266,7 +267,7 @@ void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle&
 
 void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf::RenderWindow& window,Player& Perso)
 {
-	int i;
+	size_t i;
 	//-----------Gestion des obstacles-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
@@ -293,7 +294,7 @@ void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf
 
 void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po,sf::RenderWindow& window,Player& Perso)
 {
-	int i,j;
+	size_t i,j;
 	//-----------Gestion des ennemis-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'ennemi à la liste 

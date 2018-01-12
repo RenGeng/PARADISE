@@ -41,8 +41,6 @@ int main()
 
     yoda_play=false; //Permet de rejouer le son de yoda
     bool modifier_fond_vaisseau=true; //Permet de changer le fond qu'une seule fois
-    
-    int i;
 
     //CHARGEMENT DU TEXT A AFFICHER
     sf::Font font;

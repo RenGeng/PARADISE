@@ -8,8 +8,8 @@ public:
 	Missile(std::string chemins, int vitesse_scrolling);
 	void Avance();
 	bool is_Collision(const Ennemi&,const Player&) const;
-	bool operator<=(const Player&) const{};	// Méthode inutile pour Missile
-	bool operator>=(const Player&) const{};	// Méthode inutile pour Missile
-	bool operator==(const Player&) const{}; // Méthode inutile pour Missile
+	bool operator<=(const Player&) const{return false;};	// Méthode inutile pour Missile
+	bool operator>=(const Player&) const{return false;};	// Méthode inutile pour Missile
+	bool operator==(const Player&) const{return false;}; // Méthode inutile pour Missile
 
 };

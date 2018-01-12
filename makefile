@@ -1,12 +1,11 @@
 # options de compilation
 CC = g++
-CCFLAGS = -Wall
-OPTION = -std=c++11 -g
+CCFLAGS = -Wall -std=c++11 -g
 LIBS =-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 # fichiers du projet
-SRC = main.cc Decor.cc Player.cc Evenement.cc Background.cc Objet.cc Ennemi.cc Obstacle.cc Piece.cc Missile.cc
-OBJ = $(SRC:.c=.o)
+SRC = $(wildcard *.cc)
+OBJ = $(SRC:.cc=.o)
 EXEC = main
 
 
@@ -27,12 +26,12 @@ Missile.o: Objet.hh Missile.hh
 main.o: Variable_global.hh Evenement.hh
 
 # règles de compilation
-%.o: %.c
+%.o: %.cc
 	$(CC) $(CCFLAGS) -o $@ -c $<
 	
 # règles d'édition de liens
 $(EXEC): $(OBJ)
-	$(CC) -o $@ $^ $(LIBS) $(OPTION) 	
+	$(CC) -o $@ $^ $(LIBS)	
 
 # règles supplémentaires
 clean:
