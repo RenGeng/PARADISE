@@ -303,12 +303,14 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 		if(rand()%3==0)
 		{
 			C3po.Random_x();
+			C3po.setPos(C3po.getPos_x()-C3po.getSize_x()/2+Perso.getSize_x()/4,C3po.getPos_y());
 			liste_ennemi.push_back(C3po);
 			_liste_son["C3po_son"]->play();			
 		}
 		else
 		{
 			R2d2.Random_x();
+			R2d2.setPos(R2d2.getPos_x()-R2d2.getSize_x()/2+Perso.getSize_x()/4,R2d2.getPos_y());
 			liste_ennemi.push_back(R2d2);
 			_liste_son["R2D2_son"]->play();			
 		}
@@ -332,7 +334,7 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 	    if(liste_ennemi[i].getPos_y()>800) liste_ennemi.erase(liste_ennemi.begin()+i); 
 
 	    //On regarde si un ennemi ne tombe pas contre un obstacle car dans ce cas il se décale
-	    for(auto& it:liste_obstacle)	liste_ennemi[i].Collision(it);
+	    for(auto& it:liste_obstacle) liste_ennemi[i].Collision(it);
         
 	    //On regarde si un missile touche pas l'ennemi sinon on supprime l'ennemi
 	    for(j=0; j < liste_missile.size();++j){

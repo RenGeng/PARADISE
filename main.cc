@@ -96,9 +96,9 @@ int main()
 
 
     //Fond à scrolling infinie
-    Background Fond1("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
+    Background Fond1("Image/background_SW.png",VITESSE_SCROLLING,-800);
     liste_vitesse_scrolling.push_back(&Fond1);
-    Background Fond2("Image/background_SW.jpg",VITESSE_SCROLLING,-800);
+    Background Fond2("Image/background_SW.png",VITESSE_SCROLLING,-800);
     liste_vitesse_scrolling.push_back(&Fond2);
 
     //Obstacle
@@ -147,16 +147,25 @@ int main()
             Fond1.Scrolling(&Fond2);
             //Si on arrive à un certain score on change de fond
 	    	if(score>300 && modifier_fond_vaisseau==true){
+                event.get_son("C3po_son")->stop();
+                event.get_son("R2D2_son")->stop();
+                event.get_son("missile_son")->stop();
 	    		liste_piece.clear();
 				liste_obstacle.clear();
 				liste_missile.clear();
 				liste_ennemi.clear();
 	    		Vaisseau_fuite.Scrolling();
 	    		Vaisseau_fuite.Apparition(window);
-	    		if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()==200){
+	    		if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()==200){                    
 	    			modifier_fond_vaisseau=false;
-	    			Fond1.Modifier("Image/background_vaisseau1.png");
-	    			Fond2.Modifier("Image/background_vaisseau2.png");
+	    			Fond1.Modifier("Image/background_espace1.png");
+	    			Fond2.Modifier("Image/background_espace2.png");
+                    R2d2.Modifier("Image/x-wing.png");
+                    C3po.Modifier("Image/faucon_millenium.png");
+                    missile_rouge.Modifier("Image/double_missile.png");
+                    Trou.Modifier("Image/asteroide1.png");
+                    Vaisseau_ecrase.Modifier("Image/trou_noir.png");
+                    Perso.Modifier("Image/vaisseau.png");
 	    		}
 	    		else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true);
 	    	}

@@ -3,12 +3,12 @@
 int vitesse_course=0;
 
 Player::Player(std::string chemins,int cptcadre):Decor(chemins),_cptcadre(cptcadre),_pos(1),_saut(false),_cpt_saut(0),_cpt_piece(0),_etat_game_over(false){
-	_image.setPosition(200,500);
+	_image.setPosition(200,600);
 }
 
 
 void Player::Apparition(sf::RenderWindow& window){
-	_image.setTextureRect(sf::IntRect(56*_cptcadre,0,56,110));
+	_image.setTextureRect(sf::IntRect(_texture.getSize().x*_cptcadre/2,0,_texture.getSize().x/2,_texture.getSize().y));
 	window.draw(_image);
 }
 

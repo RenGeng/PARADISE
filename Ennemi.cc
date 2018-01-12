@@ -52,7 +52,7 @@ void Ennemi::Collision(Obstacle& obstacle)
 	if(*this==obstacle)
 	    {
 
-	    	//S'il est tout à gauche il va à doire
+	    	//S'il est tout à gauche il va à droite
 	    	if(getPos_x()==50) setPos(getPos_x()+150,getPos_y());
 	    	//S'il est au milieu il va à gauche ou à droite
 	    	else if(getPos_x()==200)

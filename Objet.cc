@@ -18,3 +18,4 @@ void Objet::Random_x()
 	_image.setPosition(150*(rand()%3)+50,-150);
 }
 
+

@@ -35,6 +35,7 @@ Decor::Decor(string chemins,int vitesse_scrolling)
 }
 
 void Decor::Modifier(string chemins){
+		
 	if (!_texture.loadFromFile(chemins))
 	{
 		// Erreur
@@ -43,7 +44,7 @@ void Decor::Modifier(string chemins){
 	else
 	{
 		_texture.setSmooth(true);
-		_image.setTexture(_texture);
+		_image.setTexture(_texture,true);
 	}
 }
 
