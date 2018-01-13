@@ -27,14 +27,14 @@ bool Ennemi::operator>=(const Player& Perso) const
 
 bool Ennemi::operator==(const Player& Perso) const
 {
-	if(getPos_x()==Perso.getPos_x() && (*this>=Perso && *this<=Perso)) return true;
+	if(getPos()==Perso.getPos() && (*this>=Perso && *this<=Perso)) return true;
 
 	return false;
 }
 
 bool Ennemi::operator==(const Obstacle& obstacle) const
 {
-	if(getPos_x()==obstacle.getPos_x() &&
+	if(getPos()==obstacle.getPos() &&
 	  (getSize_y()+getPos_y() > obstacle.getPos_y() &&
 	   getPos_y()<obstacle.getPos_y())) return true;
 
@@ -53,13 +53,26 @@ void Ennemi::Collision(Obstacle& obstacle)
 	    {
 
 	    	//S'il est tout à gauche il va à droite
-	    	if(getPos_x()==50) setPos(getPos_x()+150,getPos_y());
-	    	//S'il est au milieu il va à gauche ou à droite
-	    	else if(getPos_x()==200)
-	    	{  			
-	    		setPos(300*rand()%2+50,getPos_y());
+	    	if(getPos()==0) {
+	    		setPos(getPos_x()+150,getPos_y());
+	    		setPos(1);
 	    	}
-	    	//S'il est à gauche il va à droite
-	    	else if(getPos_x()==350) setPos(getPos_x()-150,getPos_y());
+	    	//S'il est au milieu il va à gauche ou à droite
+	    	else if(getPos()==1)
+	    	{  			
+	    		if(rand()%2==0){
+	    			setPos(getPos_x()-150,getPos_y());
+	    			setPos(0);
+	    		}
+	    		else{
+	    			setPos(getPos_x()+150,getPos_y());
+	    			setPos(2);
+	    		}
+	    	}
+	    	//S'il est à droite il va à gauche
+	    	else if(getPos()==2){
+	    		setPos(getPos_x()-150,getPos_y());
+	    		setPos(1);
+	    	}
 	    }
 }

@@ -20,7 +20,7 @@ bool Piece::operator>=(const Player& Perso) const
 
 bool Piece::operator==(const Player& Perso) const
 {
-	if((getPos_x()==Perso.getPos_x() && (*this<=Perso && *this>=Perso))) return true;
+	if((getPos()==Perso.getPos() && (*this<=Perso && *this>=Perso))) return true;
 
 	return false;
 }

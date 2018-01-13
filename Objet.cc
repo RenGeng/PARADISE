@@ -15,7 +15,9 @@ void Objet::Scrolling(){
 
 void Objet::Random_x()
 {
-	_image.setPosition(150*(rand()%3)+50,-150);
+	int nb_alea=rand()%3;
+	_image.setPosition(150*nb_alea+50,-150);
+	this->setPos(nb_alea);
 }
 
 

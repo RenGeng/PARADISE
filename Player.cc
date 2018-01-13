@@ -2,8 +2,9 @@
 #define VITESSE_COURSE 5 //Gère la vitesse de changement car les sleeps c'est galere
 int vitesse_course=0;
 
-Player::Player(std::string chemins,int cptcadre):Decor(chemins),_cptcadre(cptcadre),_pos(1),_saut(false),_cpt_saut(0),_cpt_piece(0),_etat_game_over(false){
+Player::Player(std::string chemins,int cptcadre):Decor(chemins),_cptcadre(cptcadre),_saut(false),_cpt_saut(0),_cpt_piece(0),_etat_game_over(false){
 	_image.setPosition(200,600);
+	_pos=1;
 }
 
 
@@ -22,14 +23,6 @@ void Player::changement_cadre(){
 		_cptcadre+=1;
 		vitesse_course=0;
 	}
-}
-
-int Player::getPos() const{
-	return _pos;
-}
-
-void Player::setPos(int new_pos){
-	_pos=new_pos;
 }
 
 bool Player::getSaut() const{

@@ -20,18 +20,21 @@ Evenement::Evenement(){
 	if (!mort_son->openFromFile("Son/mort.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	mort_son->setVolume(50.0);
 	_liste_son["mort_son"]=mort_son;
-	sf::Music* R2D2_son=new sf::Music();
-	if (!R2D2_son->openFromFile("Son/R2D2.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
-	_liste_son["R2D2_son"]=R2D2_son;
-	sf::Music* C3po_son=new sf::Music();
-	if (!C3po_son->openFromFile("Son/C3po.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
-	_liste_son["C3po_son"]=C3po_son;
+	sf::Music* ennemi1_son=new sf::Music();
+	if (!ennemi1_son->openFromFile("Son/R2D2.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["ennemi1_son"]=ennemi1_son;
+	sf::Music* ennemi2_son=new sf::Music();
+	if (!ennemi2_son->openFromFile("Son/C3po.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["ennemi2_son"]=ennemi2_son;
 	sf::Music* piece_son=new sf::Music();
 	if (!piece_son->openFromFile("Son/piece.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	_liste_son["piece_son"]=piece_son;
 	sf::Music* yoda_son=new sf::Music();
 	if (!yoda_son->openFromFile("Son/yoda.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
-	_liste_son["yoda_son"]=yoda_son;
+	_liste_son["ecran_fin_son"]=yoda_son;
+	sf::Music* tie_fighter_son=new sf::Music();
+	if (!tie_fighter_son->openFromFile("Son/tie_fighter.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son["tie_fighter_son"]=tie_fighter_son;
 }
 
 
@@ -45,6 +48,17 @@ sf::Music* Evenement::get_son(std::string nom_son)
 	return _liste_son[nom_son];
 }
 
+void Evenement::set_son_volume(std::string nom_son,float volume)
+{
+	_liste_son[nom_son]->setVolume(volume);
+}
+
+void Evenement::set_son(std::string nom_son,std::string chemin)
+{
+	sf::Music* new_son = new sf::Music();
+	if (!new_son->openFromFile(chemin)) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	_liste_son[nom_son]=new_son;;
+}
 
 void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
 	int i;
@@ -162,10 +176,10 @@ void Evenement::Init_var()
 	borne_sup_piece = borne_sup_obstacle+0.2;
 	DELAIS_APPARITION_PIECE = (borne_inf_piece + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_piece-borne_inf_piece))))*10;
 
-	// gestion temps apparition aléatoire r2d2
-	borne_inf_r2d2 = 0.05;
-	borne_sup_r2d2 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_r2d2;
-	DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
+	// gestion temps apparition aléatoire ennemi1
+	borne_inf_ennemi1 = 0.05;
+	borne_sup_ennemi1 = SCREEN_HEIGHT/(VITESSE_SCROLLING*60.0*10.0)-borne_inf_ennemi1;
+	DELAIS_APPARITION_ennemi1 = (borne_inf_ennemi1 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_ennemi1-borne_inf_ennemi1))))*10;
 
 	// gestion temps apparition missile
 	DELAIS_MISSILE = 0.5;
@@ -182,6 +196,7 @@ void Evenement::Restart()
     liste_ennemi.clear();
     yoda_play=false;
 
+
 }
 
 void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso)
@@ -193,6 +208,7 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
     {
         //Affectation aléatoire de la position des pieces en x
         piece.Random_x();
+        piece.Centrer(Perso);
 
         //Affectation aléatoire du nombre de piece entre 3 et 6
         for(j=0;j<rand()%5+3;j++)
@@ -236,11 +252,13 @@ void Evenement::gestion_objet(sf::Clock& clock_obstacle,Obstacle& Trou,Obstacle&
 		if(rand()%5==0){
 			//Affectation aléatoire de la position du trou ou du vaisseau
 			Vaisseau_ecrase.Random_x();
+			Vaisseau_ecrase.Centrer(Perso);
 	    	liste_obstacle.push_back(Vaisseau_ecrase);
 		}
 		else{
 			//Affectation aléatoire de la position du trou ou du vaisseau
 	    	Trou.Random_x();
+	    	Trou.Centrer(Perso);
 	    	liste_obstacle.push_back(Trou);
 	    }
 
@@ -273,7 +291,9 @@ void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf
 	//Si la clock est supérieur au délai d'apparation on ajoute l'obstacle à la liste 
 	if(clock_missile.getElapsedTime().asSeconds()>DELAIS_MISSILE && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		missile_rouge.setPos(Perso.getPos_x()+Perso.getSize_x()/4,Perso.getPos_y());
+		missile_rouge.setPos(Perso.getPos_x(),Perso.getPos_y());
+		missile_rouge.setPos(Perso.getPos());
+		missile_rouge.Centrer(Perso);		
 		liste_missile.push_back(missile_rouge);
 		_liste_son["missile_son"]->play();
 
@@ -292,32 +312,32 @@ void Evenement::gestion_objet(sf::Clock& clock_missile,Missile& missile_rouge,sf
 	}
 }
 
-void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po,sf::RenderWindow& window,Player& Perso)
+void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& ennemi1,Ennemi& ennemi2,sf::RenderWindow& window,Player& Perso)
 {
 	size_t i,j;
 	//-----------Gestion des ennemis-----------//
 
 	//Si la clock est supérieur au délai d'apparation on ajoute l'ennemi à la liste 
-	if(clock_ennemi.getElapsedTime().asSeconds()>DELAIS_APPARITION_R2D2)
+	if(clock_ennemi.getElapsedTime().asSeconds()>DELAIS_APPARITION_ennemi1)
 	{
 		if(rand()%3==0)
 		{
-			C3po.Random_x();
-			C3po.setPos(C3po.getPos_x()-C3po.getSize_x()/2+Perso.getSize_x()/4,C3po.getPos_y());
-			liste_ennemi.push_back(C3po);
-			_liste_son["C3po_son"]->play();			
+			ennemi2.Random_x();
+			ennemi2.Centrer(Perso);
+			liste_ennemi.push_back(ennemi2);
+			_liste_son["ennemi2_son"]->play();			
 		}
 		else
 		{
-			R2d2.Random_x();
-			R2d2.setPos(R2d2.getPos_x()-R2d2.getSize_x()/2+Perso.getSize_x()/4,R2d2.getPos_y());
-			liste_ennemi.push_back(R2d2);
-			_liste_son["R2D2_son"]->play();			
+			ennemi1.Random_x();
+			ennemi1.Centrer(Perso);
+			liste_ennemi.push_back(ennemi1);
+			_liste_son["ennemi1_son"]->play();			
 		}
 
 	    //Réinitialisation du clock_ennemi
 	    clock_ennemi.restart();
-	    DELAIS_APPARITION_R2D2 = (borne_inf_r2d2 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_r2d2-borne_inf_r2d2))))*10;
+	    DELAIS_APPARITION_ennemi1 = (borne_inf_ennemi1 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(borne_sup_ennemi1-borne_inf_ennemi1))))*10;
 	}
 
 	//On parcourt les ennemis pour les afficher
@@ -343,7 +363,7 @@ void Evenement::gestion_objet(sf::Clock& clock_ennemi, Ennemi& R2d2,Ennemi& C3po
 	    	 	liste_ennemi.erase(liste_ennemi.begin()+i);
 	    	 	liste_missile.erase(liste_missile.begin()+j);
 	    	 	_liste_son["mort_son"]->play();
-	    	 	_liste_son["C3po_son"]->stop();
+	    	 	_liste_son["ennemi2_son"]->stop();
 	    	 }
 	    }              
 	}
@@ -370,8 +390,8 @@ void Evenement::gestion_difficulte()
 		if(borne_inf_obstacle>0.05)	borne_inf_obstacle-=0.01;
 		if(borne_sup_obstacle>borne_inf_obstacle+0.05)	borne_sup_obstacle-=0.05;
 
-		if(borne_inf_r2d2>0.05) borne_inf_r2d2-=0.01;
-		if(borne_sup_r2d2>borne_inf_r2d2+0.07) borne_sup_r2d2-=0.02;
+		if(borne_inf_ennemi1>0.05) borne_inf_ennemi1-=0.01;
+		if(borne_sup_ennemi1>borne_inf_ennemi1+0.07) borne_sup_ennemi1-=0.02;
 
 	}
 }

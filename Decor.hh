@@ -18,10 +18,15 @@ public:
 	int getSize_x() const;
 	int getSize_y() const;
 	void setVitesse_Scrolling(int vitesse);
+	void Centrer(Decor& decor1);
+	int getPos() const;
+	void setPos(int pos);
+
 
 protected:
 	sf::Texture _texture;
 	sf::Sprite _image;
 	int _vitesse_scrolling;
+	int _pos; //Permet de connaitre la position du decor, 0=gauche 1=milieu 2=droite
 };
 

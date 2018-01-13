@@ -15,6 +15,7 @@ Decor::Decor(string chemins)
 		_image.setTexture(_texture);
 	}
 	_vitesse_scrolling=0;
+	_pos=0;
 
 
 }
@@ -32,6 +33,7 @@ Decor::Decor(string chemins,int vitesse_scrolling)
 		_image.setTexture(_texture);
 	}
 	_vitesse_scrolling=vitesse_scrolling;
+	_pos=0;
 }
 
 void Decor::Modifier(string chemins){
@@ -80,4 +82,19 @@ int Decor::getSize_y() const{
 
 void Decor::setVitesse_Scrolling(int vitesse){
 	_vitesse_scrolling=vitesse;
+}
+
+//Methode permettant de centrer un decor par rapport à un autre
+void Decor::Centrer(Decor& decor1){	
+	//On divise decor par 4 car ca sera tout le temps le personnage qui a deux images pour l'animation donc divisé par 4
+	if((int)_texture.getSize().x/2>decor1.getSize_x()/4) _image.setPosition(_image.getPosition().x-(_texture.getSize().x/2-decor1.getSize_x()/4),_image.getPosition().y);
+	else _image.setPosition(_image.getPosition().x+(decor1.getSize_x()/4-_texture.getSize().x/2),_image.getPosition().y);
+}
+
+int Decor::getPos() const{
+	return _pos;
+}
+
+void Decor::setPos(int pos){
+	_pos=pos;
 }

@@ -15,6 +15,8 @@ public:
 	Evenement();
 	~Evenement();
 	sf::Music* get_son(std::string);
+	void set_son(std::string nom_son,std::string chemin);
+	void set_son_volume(std::string nom_son,float volume);
 	void ActionPlayer(sf::RenderWindow &window,Player* item);
 	void Menu(sf::RenderWindow &window,std::vector<Background>& liste_menu,std::vector<Background>& liste_commande);
 	std::vector<Background> liste_scintillement(std::vector<Background>& liste_menu);

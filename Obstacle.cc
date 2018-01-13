@@ -20,7 +20,7 @@ bool Obstacle::operator>=(const Player& Perso) const
 
 bool Obstacle::operator==(const Player& Perso) const
 {
-	if(getPos_x()==Perso.getPos_x() && 
+	if(getPos()==Perso.getPos() && 
 	  (*this>=Perso && *this<=Perso) && Perso.getSaut()==false) return true;
 
 	return false;

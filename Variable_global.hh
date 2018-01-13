@@ -20,10 +20,10 @@ extern float DELAIS_APPARITION_OBSTACLE;
 extern float borne_inf_piece;
 extern float borne_sup_piece;
 extern float DELAIS_APPARITION_PIECE;
-// gestion temps apparition aléatoire r2d2
-extern float borne_inf_r2d2;
-extern float borne_sup_r2d2;
-extern float DELAIS_APPARITION_R2D2;
+// gestion temps apparition aléatoire ennemi1
+extern float borne_inf_ennemi1;
+extern float borne_sup_ennemi1;
+extern float DELAIS_APPARITION_ennemi1;
 // gestion temps apparition aléatoire missile
 extern float DELAIS_MISSILE;
 
