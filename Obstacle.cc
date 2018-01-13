@@ -30,5 +30,5 @@ bool Obstacle::operator==(const Player& Perso) const
 
 void Obstacle::Collision(Player& Perso)
 {
-	if(*this==Perso) Perso.set_Game_over(true);
+	if(*this==Perso) Perso.set_Game_over(true,"Un obstacle !");
 }

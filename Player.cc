@@ -56,12 +56,17 @@ void Player::set_cpt_piece(int val)
 	_cpt_piece=val;;
 }
 
-void Player::set_Game_over(bool etat)
+void Player::set_Game_over(bool etat,std::string message)
 {
+	_message_mort=message;
 	_etat_game_over=etat;
 }
 
 bool Player::get_Game_over() const
 {
 	return _etat_game_over;
+}
+
+std::string Player::get_message_mort(){
+	return _message_mort;
 }

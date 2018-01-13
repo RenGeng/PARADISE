@@ -43,7 +43,7 @@ bool Ennemi::operator==(const Obstacle& obstacle) const
 
 void Ennemi::Collision(Player& Perso)
 {
-	if(*this==Perso) Perso.set_Game_over(true);
+	if(*this==Perso) Perso.set_Game_over(true,"Un ennemi !");
 }
 
 

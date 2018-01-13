@@ -57,6 +57,12 @@ int main()
     text_piece.setStyle(sf::Text::Bold);
     text_piece.setColor(sf::Color::White);
 
+    sf::Text text_mort;
+    text_mort.setFont(font);
+    text_mort.setCharacterSize(30);
+    text_mort.setStyle(sf::Text::Bold);
+    text_mort.setColor(sf::Color::White);
+
     //Création fenêtre 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT),"Paperise Run");
     //Modifier position de la fenêtre
@@ -147,7 +153,7 @@ int main()
             Fond2.Apparition(window);
             Fond1.Scrolling(&Fond2);
             //Si on arrive à un certain score on change de fond
-	    	if(score>1000 && modifier_fond_vaisseau==true){
+	    	if(Perso.get_cpt_piece()>=20 && modifier_fond_vaisseau==true){
                 event.get_son("ennemi2_son")->stop();
                 event.get_son("ennemi1_son")->stop();
                 event.get_son("missile_son")->stop();
@@ -181,7 +187,7 @@ int main()
 
 	    		}
                 //Si le joueur ne va pas dans la porte du vaisseau mais sur le coté il a perdu
-	    		else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true);
+	    		else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true,"Tu n'es pas entré dans le vaisseau ...");
 	    	}
 
             event.gestion_vitesse(liste_vitesse_scrolling);
@@ -228,7 +234,7 @@ int main()
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
             {
                 event.Restart();
-                Perso.set_Game_over(false);
+                Perso.set_Game_over(false,"");
                 Perso.set_cpt_piece(0);
                 Fond1.Modifier("Image/background_SW.png");
                 Fond2.Modifier("Image/background_SW.png");
@@ -242,6 +248,7 @@ int main()
                 event.set_son("ennemi1_son","Son/R2D2.wav");
                 event.set_son_volume("ennemi1_son",70.0);
                 event.set_son("mort_son","Son/mort.wav");
+                Vaisseau_fuite.setPos((SCREEN_WIDTH/2)-Vaisseau_fuite.getSize_x()/2,-Vaisseau_fuite.getSize_y());
                 modifier_fond_vaisseau=true;
 
             }
@@ -249,6 +256,11 @@ int main()
             text_score.setPosition(120,25);
             text_score.setString("Votre score: "+to_string(score*Perso.get_cpt_piece()));
             window.draw(text_score);
+
+            text_mort.setColor(sf::Color::White);
+            text_mort.setPosition(50,550);
+            text_mort.setString("Tu t'es pris :\n"+Perso.get_message_mort());
+            window.draw(text_mort);
 
         }
        
