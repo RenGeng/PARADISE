@@ -210,8 +210,8 @@ void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWind
         piece.Random_x();
         piece.Centrer(Perso);
 
-        //Affectation aléatoire du nombre de piece entre 3 et 6
-        for(j=0;j<rand()%5+3;j++)
+        //Affectation aléatoire du nombre de piece entre 3 et 5
+        for(j=0;j<rand()%3+3;j++)
         {
             //On modifie la coordonnée y de chaque piece pour les avoir les unes à la suite des autres
             piece.setPos(piece.getPos_x(),-50*j);

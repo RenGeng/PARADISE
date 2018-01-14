@@ -183,11 +183,11 @@ int main()
                     event.set_son("ennemi1_son","Son/x-wing.wav");
                     event.set_son_volume("ennemi1_son",70.0);
                     event.set_son("mort_son","Son/mort2.wav");
-                    event.set_son_volume("mort_son",70.0);
+                    event.set_son_volume("mort_son",40.0);
 
 	    		}
                 //Si le joueur ne va pas dans la porte du vaisseau mais sur le coté il a perdu
-	    		else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true,"Tu n'es pas entré dans le vaisseau ...");
+	    		else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true,"Le vaisseau ...");
 	    	}
 
             event.gestion_vitesse(liste_vitesse_scrolling);
