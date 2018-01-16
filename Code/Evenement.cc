@@ -5,36 +5,36 @@ Evenement::Evenement(){
 
 	//Chargement des sons
 	sf::Music* Menu_son = new sf::Music();
-	if (!Menu_son->openFromFile("Son/menu.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!Menu_son->openFromFile("../Son/menu.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	Menu_son->setLoop(true);
 	_liste_son["Menu_son"] = Menu_son;
 	sf::Music* Music_fond=new sf::Music();
-	if (!Music_fond->openFromFile("Son/music_fond.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!Music_fond->openFromFile("../Son/music_fond.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	Music_fond->setVolume(50.0);
 	Music_fond->setLoop(true);
 	_liste_son["Music_fond"] = Music_fond;
 	sf::Music* missile_son=new sf::Music();;
-	if (!missile_son->openFromFile("Son/missile.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!missile_son->openFromFile("../Son/missile.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	missile_son->setVolume(50.0);
 	_liste_son["missile_son"]=missile_son;
 	sf::Music* mort_son=new sf::Music();
-	if (!mort_son->openFromFile("Son/mort.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!mort_son->openFromFile("../Son/mort.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	mort_son->setVolume(50.0);
 	_liste_son["mort_son"]=mort_son;
 	sf::Music* ennemi1_son=new sf::Music();
-	if (!ennemi1_son->openFromFile("Son/R2D2.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!ennemi1_son->openFromFile("../Son/R2D2.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	_liste_son["ennemi1_son"]=ennemi1_son;
 	sf::Music* ennemi2_son=new sf::Music();
-	if (!ennemi2_son->openFromFile("Son/C3po.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!ennemi2_son->openFromFile("../Son/C3po.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	_liste_son["ennemi2_son"]=ennemi2_son;
 	sf::Music* piece_son=new sf::Music();
-	if (!piece_son->openFromFile("Son/piece.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!piece_son->openFromFile("../Son/piece.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	_liste_son["piece_son"]=piece_son;
 	sf::Music* yoda_son=new sf::Music();
-	if (!yoda_son->openFromFile("Son/yoda.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!yoda_son->openFromFile("../Son/yoda.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	_liste_son["ecran_fin_son"]=yoda_son;
 	sf::Music* tie_fighter_son=new sf::Music();
-	if (!tie_fighter_son->openFromFile("Son/tie_fighter.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
+	if (!tie_fighter_son->openFromFile("../Son/tie_fighter.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	_liste_son["tie_fighter_son"]=tie_fighter_son;
 }
 
@@ -117,6 +117,7 @@ void Evenement::Menu(sf::RenderWindow &window,std::vector<Background>& liste_men
 		//Gestion du scintillement
 		clock+=1;
 		window.clear();
+		sf::Event event1;
 		liste_decor[selection_menu].Apparition(window);
 		if(clock==7){			
 			selection_menu+=1;
@@ -140,6 +141,16 @@ void Evenement::Menu(sf::RenderWindow &window,std::vector<Background>& liste_men
 
 		//On sort si les deux sont en false
 		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && menu==false && commande==false) break;
+
+	   	while(window.pollEvent(event1))
+	   	{
+    		//Si on clique sur fermer
+    		if(event1.type == sf::Event::Closed) 
+    			{
+    				window.close();
+    				return;
+    			}
+    	}
 	}
 	_liste_son["Menu_son"]->stop();
 }
@@ -183,7 +194,7 @@ void Evenement::Init_var()
 	score=0;
 }
 
-void Evenement::Restart()
+void Evenement::Restart(std::vector<Decor*>& liste_modif, Player& Perso)
 {
 	Init_var();
 	liste_piece.clear();
@@ -191,7 +202,67 @@ void Evenement::Restart()
     liste_missile.clear();
     liste_ennemi.clear();
     yoda_play=false;
+    Perso.set_Game_over(false,"");
+    Perso.set_cpt_piece(0);
+
+    liste_modif[0]->Modifier("../Image/background_SW.png");
+    liste_modif[1]->Modifier("../Image/background_SW.png");
+    liste_modif[2]->Modifier("../Image/cratere.png");
+    liste_modif[3]->Modifier("../Image/monstre_sable.png");
+    liste_modif[4]->Modifier("../Image/r2d2.png");
+    liste_modif[5]->Modifier("../Image/c3po.png");
+    liste_modif[6]->Modifier("../Image/missile.png");
+    Perso.Modifier("../Image/ST1.png");
+   	set_son("ennemi2_son","../Son/C3po.wav");
+    set_son("ennemi1_son","../Son/R2D2.wav");
+    set_son_volume("ennemi1_son",70.0);
+    set_son("mort_son","../Son/mort.wav");
 }
+
+void Evenement::Changement(std::vector<Decor*>& liste_modif,bool& modifier_fond_vaisseau, Obstacle& Vaisseau_fuite, sf::RenderWindow& window, Player& Perso)
+{
+	//Si on arrive à un certain score on change de fond
+	if(Perso.get_cpt_piece()>=5 && modifier_fond_vaisseau==true)
+    {
+    	get_son("ennemi2_son")->stop();
+        get_son("ennemi1_son")->stop();
+        get_son("missile_son")->stop();
+	    liste_piece.clear();
+		liste_obstacle.clear();
+		liste_missile.clear();
+		liste_ennemi.clear();
+	    Vaisseau_fuite.Scrolling();
+	    Vaisseau_fuite.Apparition(window);
+
+        if(Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()+50>Perso.getPos_y() && get_son("tie_fighter_son")->getStatus()==0)
+        {
+ 	       set_son_volume("tie_fighter_son",150.0);
+           get_son("tie_fighter_son")->play();
+        }
+      	if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()==200)
+        {                               
+		  modifier_fond_vaisseau=false;
+		  liste_modif[0]->Modifier("../Image/background_espace1.png");
+		  liste_modif[1]->Modifier("../Image/background_espace2.png");
+		  liste_modif[2]->Modifier("../Image/asteroide1.png");
+		  liste_modif[3]->Modifier("../Image/trou_noir.png");
+		  liste_modif[4]->Modifier("../Image/x-wing.png");
+		  liste_modif[5]->Modifier("../Image/faucon_millenium.png");
+		  liste_modif[6]->Modifier("../Image/double_missile.png");
+		  Perso.Modifier("../Image/vaisseau.png");
+		  set_son("ennemi2_son","../Son/faucon_millenium.wav");
+		  set_son("ennemi1_son","../Son/x-wing.wav");
+		  set_son_volume("ennemi1_son",70.0);
+		  set_son("mort_son","../Son/mort2.wav");
+		  set_son_volume("mort_son",40.0);
+	   	}
+        //Si le joueur ne va pas dans la porte du vaisseau mais sur le coté il a perdu
+	   	else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true,"Le vaisseau ...");
+ 	}
+}
+
+
+
 
 void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso)
 {

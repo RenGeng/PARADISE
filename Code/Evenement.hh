@@ -14,14 +14,27 @@ class Evenement
 public:
 	Evenement();
 	~Evenement();
+
+	// Méthodes de gestion de son
 	sf::Music* get_son(std::string);
 	void set_son(std::string nom_son,std::string chemin);
 	void set_son_volume(std::string nom_son,float volume);
+
+	//Méthode de gestion du joueur
 	void ActionPlayer(sf::RenderWindow &window,Player* item);
+
+	// Méthode de gestion des menus et commandes
 	void Menu(sf::RenderWindow &window,std::vector<Background>& liste_menu,std::vector<Background>& liste_commande);
 	std::vector<Background> liste_scintillement(std::vector<Background>& liste_menu);
+
+	// Initialisation des variables globales
 	void Init_var();
-	void Restart();
+
+	// Réinitialisation des variables et des decors
+	void Restart(std::vector<Decor*>&, Player&);
+
+	// Changement de décors lorsque les conditions sont remplie
+	void Changement(std::vector<Decor*>&, bool&, Obstacle&, sf::RenderWindow&, Player&);
 
 	/* GESTION DES DIVERS OBJETS */
 	void gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso);
