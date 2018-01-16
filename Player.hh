@@ -25,5 +25,5 @@ private:
 	int _cpt_saut; //permet de savoir ou on en est dans le saut
 	int _cpt_piece; //compteur des pièces ramassées
 	bool _etat_game_over; //Etat du joueur
-	std::string _message_mort;
+	std::string _message_mort; // La cause de la mort
 };

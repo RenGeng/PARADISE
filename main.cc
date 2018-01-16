@@ -39,30 +39,6 @@ int main()
     Evenement event;
     event.Init_var();
 
-    yoda_play=false; //Permet de rejouer le son de yoda
-    bool modifier_fond_vaisseau=true; //Permet de changer le fond qu'une seule fois
-
-    //CHARGEMENT DU TEXT A AFFICHER
-    sf::Font font;
-    if (!font.loadFromFile("CaviarDreams.ttf")) cout<<"ERREUR CHARGEMENT POLICE"<<endl;
-    sf::Text text_score;
-    text_score.setFont(font);
-    text_score.setCharacterSize(30);
-    text_score.setStyle(sf::Text::Bold);
-    text_score.setColor(sf::Color::White);
-    
-    sf::Text text_piece;
-    text_piece.setFont(font);
-    text_piece.setCharacterSize(30);
-    text_piece.setStyle(sf::Text::Bold);
-    text_piece.setColor(sf::Color::White);
-
-    sf::Text text_mort;
-    text_mort.setFont(font);
-    text_mort.setCharacterSize(30);
-    text_mort.setStyle(sf::Text::Bold);
-    text_mort.setColor(sf::Color::White);
-
     //Création fenêtre 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT),"Paperise Run");
     //Modifier position de la fenêtre
@@ -97,6 +73,31 @@ int main()
     Background Game_over("Image/game_over.png");
 
     event.Menu(window,liste_menu,liste_commande);
+
+    yoda_play=false; //Permet de rejouer le son de yoda
+    bool modifier_fond_vaisseau=true; //Permet de changer le fond qu'une seule fois
+
+    //CHARGEMENT DU TEXT A AFFICHER
+    sf::Font font;
+    if (!font.loadFromFile("CaviarDreams.ttf")) cout<<"ERREUR CHARGEMENT POLICE"<<endl;
+    sf::Text text_score;
+    text_score.setFont(font);
+    text_score.setCharacterSize(30);
+    text_score.setStyle(sf::Text::Bold);
+    text_score.setColor(sf::Color::White);
+    
+    sf::Text text_piece;
+    text_piece.setFont(font);
+    text_piece.setCharacterSize(30);
+    text_piece.setStyle(sf::Text::Bold);
+    text_piece.setColor(sf::Color::White);
+
+    sf::Text text_mort;
+    text_mort.setFont(font);
+    text_mort.setCharacterSize(30);
+    text_mort.setStyle(sf::Text::Bold);
+    text_mort.setColor(sf::Color::White);
+
 
     // Conteneur pour la gestion de la vitesse
     vector<Decor*> liste_vitesse_scrolling;
@@ -141,10 +142,6 @@ int main()
 
     while(window.isOpen())
     {       
-    	//Si la music de fond est arrété on recommence
-    	if(event.get_son("Music_fond")->getStatus()==0) event.get_son("Music_fond")->play();
-
-    	
         if(!Perso.get_Game_over())
         {        	
             event.ActionPlayer(window,&Perso);
@@ -153,7 +150,8 @@ int main()
             Fond2.Apparition(window);
             Fond1.Scrolling(&Fond2);
             //Si on arrive à un certain score on change de fond
-	    	if(Perso.get_cpt_piece()>=20 && modifier_fond_vaisseau==true){
+	    	if(Perso.get_cpt_piece()>=5 && modifier_fond_vaisseau==true)
+            {
                 event.get_son("ennemi2_son")->stop();
                 event.get_son("ennemi1_son")->stop();
                 event.get_son("missile_son")->stop();
@@ -164,12 +162,14 @@ int main()
 	    		Vaisseau_fuite.Scrolling();
 	    		Vaisseau_fuite.Apparition(window);
 
-                if(Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()+50>Perso.getPos_y() && event.get_son("tie_fighter_son")->getStatus()==0){
+                if(Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()+50>Perso.getPos_y() && event.get_son("tie_fighter_son")->getStatus()==0)
+                {
                     event.set_son_volume("tie_fighter_son",150.0);
                     event.get_son("tie_fighter_son")->play();
                 }
 
-	    		if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()==200){                               
+	    		if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()==200)
+                {                               
 	    			modifier_fond_vaisseau=false;
 	    			Fond1.Modifier("Image/background_espace1.png");
 	    			Fond2.Modifier("Image/background_espace2.png");
@@ -184,7 +184,6 @@ int main()
                     event.set_son_volume("ennemi1_son",70.0);
                     event.set_son("mort_son","Son/mort2.wav");
                     event.set_son_volume("mort_son",40.0);
-
 	    		}
                 //Si le joueur ne va pas dans la porte du vaisseau mais sur le coté il a perdu
 	    		else if(Perso.getPos_y()<Vaisseau_fuite.getPos_y()+Vaisseau_fuite.getSize_y()*1/2 && Perso.getPos_x()!=200) Perso.set_Game_over(true,"Le vaisseau ...");

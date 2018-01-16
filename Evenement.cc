@@ -11,6 +11,7 @@ Evenement::Evenement(){
 	sf::Music* Music_fond=new sf::Music();
 	if (!Music_fond->openFromFile("Son/music_fond.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
 	Music_fond->setVolume(50.0);
+	Music_fond->setLoop(true);
 	_liste_son["Music_fond"] = Music_fond;
 	sf::Music* missile_son=new sf::Music();;
 	if (!missile_son->openFromFile("Son/missile.wav")) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
@@ -57,7 +58,8 @@ void Evenement::set_son(std::string nom_son,std::string chemin)
 {
 	sf::Music* new_son = new sf::Music();
 	if (!new_son->openFromFile(chemin)) std::cout<<"ERREUR CHARGEMENT SON"<<std::endl;
-	_liste_son[nom_son]=new_son;;
+	delete _liste_son[nom_son];
+	_liste_son[nom_son]=new_son;
 }
 
 void Evenement::ActionPlayer(sf::RenderWindow &window,Player* item){
@@ -109,7 +111,6 @@ void Evenement::Menu(sf::RenderWindow &window,std::vector<Background>& liste_men
 	//Définition des vectors menu pour le parcourir à chaque tour
 	int selection_menu=0;
 	std::vector<Background> liste_decor=this->liste_scintillement(liste_menu);
-	sf::Event event1;
 	_liste_son["Menu_son"]->play();
 	while(1)
 	{		
@@ -139,11 +140,6 @@ void Evenement::Menu(sf::RenderWindow &window,std::vector<Background>& liste_men
 
 		//On sort si les deux sont en false
 		else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && menu==false && commande==false) break;
-		
-    	while(window.pollEvent(event1)){
-    		//Si on clique sur fermer
-    		if(event1.type == sf::Event::Closed) window.close();
-    	}
 	}
 	_liste_son["Menu_son"]->stop();
 }
@@ -195,8 +191,6 @@ void Evenement::Restart()
     liste_missile.clear();
     liste_ennemi.clear();
     yoda_play=false;
-
-
 }
 
 void Evenement::gestion_objet(sf::Clock& clock_piece,Piece& piece,sf::RenderWindow& window,Player& Perso)
