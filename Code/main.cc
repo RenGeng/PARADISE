@@ -97,7 +97,8 @@ int main()
     while(window.isOpen())
     {       
         if(!Perso.get_Game_over())
-        {        	
+        {     
+        	if(event.get_son("Music_fond")->getStatus()==0) event.get_son("Music_fond")->play(); 	
             event.ActionPlayer(window,&Perso);
             window.clear();
             Fond1.Apparition(window);

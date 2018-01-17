@@ -222,7 +222,7 @@ void Evenement::Restart(std::vector<Decor*>& liste_modif, Player& Perso)
 void Evenement::Changement(std::vector<Decor*>& liste_modif,bool& modifier_fond_vaisseau, Obstacle& Vaisseau_fuite, sf::RenderWindow& window, Player& Perso)
 {
 	//Si on arrive à un certain score on change de fond
-	if(Perso.get_cpt_piece()>=5 && modifier_fond_vaisseau==true)
+	if(Perso.get_cpt_piece()>=20 && modifier_fond_vaisseau==true)
     {
     	get_son("ennemi2_son")->stop();
         get_son("ennemi1_son")->stop();
